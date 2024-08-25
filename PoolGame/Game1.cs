@@ -25,12 +25,11 @@ namespace PoolGame
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-            _graphics.PreferredBackBufferWidth = 1280; // window width
-            _graphics.PreferredBackBufferHeight = 720; // window height
+            _graphics.PreferredBackBufferWidth = 1280; // default window width
+            _graphics.PreferredBackBufferHeight = 720; // default window height
             _graphics.ApplyChanges();
 
             Window.AllowUserResizing = true;
-
         }
 
         protected override void Initialize()
@@ -44,19 +43,10 @@ namespace PoolGame
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            int windowWidth = _graphics.PreferredBackBufferWidth;
-            int windowHeight = _graphics.PreferredBackBufferWidth;
-
             // TODO: use this.Content to load your game content here
 
             // tableRim properties:
             tableRimTexture = Content.Load<Texture2D>("2-1 rectangle (transparent)");
-            tableRimScaleX = (float)windowWidth / tableRimTexture.Width;
-            tableRimScaleY = (float)windowHeight / tableRimTexture.Height;
-            tableRimScale = Math.Min(tableRimScaleX, tableRimScaleY);
-            tableScaledWidth = tableRimTexture.Width * tableRimScale;
-            tableScaledHeight = tableRimTexture.Height * tableRimScale;
-            tableRimPosition = new Vector2((windowWidth - tableScaledWidth) / 2, (windowHeight - tableScaledHeight) / 2);
         }
 
         protected override void Update(GameTime gameTime)
@@ -71,6 +61,16 @@ namespace PoolGame
                 _graphics.IsFullScreen = !_graphics.IsFullScreen;
                 _graphics.ApplyChanges();
             }
+
+            int windowWidth = GraphicsDevice.Viewport.Width;
+            int windowHeight = GraphicsDevice.Viewport.Height;
+
+            tableRimScaleX = (float)windowWidth / tableRimTexture.Width;
+            tableRimScaleY = (float)windowHeight / tableRimTexture.Height;
+            tableRimScale = Math.Min(tableRimScaleX, tableRimScaleY);
+            tableScaledWidth = tableRimTexture.Width * tableRimScale;
+            tableScaledHeight = tableRimTexture.Height * tableRimScale;
+            tableRimPosition = new Vector2(windowWidth / 2, windowHeight - (tableScaledHeight / 2));
 
             base.Update(gameTime);
         }
@@ -89,7 +89,7 @@ namespace PoolGame
                 null,
                 Color.White,
                 0f,
-                Vector2.Zero,
+                new Vector2(tableRimTexture.Width / 2, tableRimTexture.Height / 2),
                 new Vector2(tableRimScale, tableRimScale),
                 SpriteEffects.None,
                 0f
