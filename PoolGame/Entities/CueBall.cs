@@ -16,16 +16,20 @@ namespace PoolGame.Entities
         private Vector2 position;
         private Vector2 velocity;
 
-        public CueBall(Texture2D texture, Vector2 initPosition, Vector2 velocity)
+        public CueBall(Texture2D texture, Vector2 initPosition)
         {
             this.texture = texture;
             this.position = initPosition;
-            this.velocity = velocity;
         }
 
         public void MoveTo(Vector2 newPosition)
         {
             this.position = newPosition;
+        }
+
+        public void Velocity()
+        {
+
         }
 
         public void Update(GameTime gameTime)
@@ -40,8 +44,8 @@ namespace PoolGame.Entities
                 null,
                 Color.White,
                 0f,
-                new Vector2(texture.Width / 2, texture.Height / 2),
-                position,
+                new Vector2(texture.Width / 2, texture.Height / 2), // centre of sprite
+                Vector2.One,
                 SpriteEffects.None,
                 0f
             );

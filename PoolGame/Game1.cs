@@ -35,7 +35,7 @@ namespace PoolGame
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            previousKeyboardState = Keyboard.GetState(); // getting the starting state of the keyboard, so that fullscreen can be used
 
             base.Initialize();
         }
@@ -44,14 +44,13 @@ namespace PoolGame
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            // loading objects:
 
             tableRimTexture = Content.Load<Texture2D>("2-1 rectangle (transparent)");
             _tableRim = new TableRim(tableRimTexture, Vector2.Zero, Vector2.Zero, GraphicsDevice);
 
             cueBallTexture = Content.Load<Texture2D>("circle 99x99");
-            _cueBall = new CueBall(cueBallTexture, Vector2.Zero, Vector2.Zero);
-
+            _cueBall = new CueBall(cueBallTexture, new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2));
         }
 
         protected override void Update(GameTime gameTime)
@@ -59,8 +58,7 @@ namespace PoolGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
-
+            // toggle fullscreen with 'F':
             if (Keyboard.GetState().IsKeyDown(Keys.F))
             {
                 if (!previousKeyboardState.IsKeyDown(Keys.F))
@@ -69,20 +67,21 @@ namespace PoolGame
                     _graphics.ApplyChanges();
                 }
             }
+            previousKeyboardState = Keyboard.GetState(); // re-assign for the next Update()
 
-            previousKeyboardState = Keyboard.GetState();
 
-            _cueBall.Update(gameTime);
+            // updating objects:
             _tableRim.Update(gameTime);
+            _cueBall.Update(gameTime);
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.White);
+            GraphicsDevice.Clear(Color.White); // background colour
 
-            // TODO: Add your drawing code here
+            // main sprite batch:
 
             _spriteBatch.Begin();
 
@@ -90,6 +89,7 @@ namespace PoolGame
             _cueBall.Draw(_spriteBatch);
 
             _spriteBatch.End();
+
 
             base.Draw(gameTime);
         }
