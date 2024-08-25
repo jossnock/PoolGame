@@ -41,7 +41,7 @@ namespace PoolGame.Entities
                 Color.White,
                 0f,
                 new Vector2(texture.Width / 2, texture.Height / 2),
-                Vector2.Zero,
+                position,
                 SpriteEffects.None,
                 0f
             );

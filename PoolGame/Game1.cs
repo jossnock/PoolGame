@@ -11,13 +11,10 @@ namespace PoolGame
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        private KeyboardState previousKeyboardState;
+
+        TableRim _tableRim;
         Texture2D tableRimTexture;
-        Vector2 tableRimPosition;
-        float tableRimScaleX;
-        float tableRimScaleY;
-        float tableRimScale;
-        float tableScaledWidth;
-        float tableScaledHeight;
 
         CueBall _cueBall;
         Texture2D cueBallTexture;
@@ -50,6 +47,7 @@ namespace PoolGame
             // TODO: use this.Content to load your game content here
 
             tableRimTexture = Content.Load<Texture2D>("2-1 rectangle (transparent)");
+            _tableRim = new TableRim(tableRimTexture, Vector2.Zero, Vector2.Zero, GraphicsDevice);
 
             cueBallTexture = Content.Load<Texture2D>("circle 99x99");
             _cueBall = new CueBall(cueBallTexture, Vector2.Zero, Vector2.Zero);
@@ -65,22 +63,17 @@ namespace PoolGame
 
             if (Keyboard.GetState().IsKeyDown(Keys.F))
             {
-                _graphics.IsFullScreen = !_graphics.IsFullScreen;
-                _graphics.ApplyChanges();
+                if (!previousKeyboardState.IsKeyDown(Keys.F))
+                {
+                    _graphics.IsFullScreen = !_graphics.IsFullScreen;
+                    _graphics.ApplyChanges();
+                }
             }
 
-            int windowWidth = GraphicsDevice.Viewport.Width;
-            int windowHeight = GraphicsDevice.Viewport.Height;
-
-            tableRimScaleX = (float)windowWidth / tableRimTexture.Width;
-            tableRimScaleY = (float)windowHeight / tableRimTexture.Height;
-            tableRimScale = Math.Min(tableRimScaleX, tableRimScaleY);
-            tableScaledWidth = tableRimTexture.Width * tableRimScale;
-            tableScaledHeight = tableRimTexture.Height * tableRimScale;
-            tableRimPosition = new Vector2(windowWidth / 2, windowHeight - (tableScaledHeight / 2));
-
+            previousKeyboardState = Keyboard.GetState();
 
             _cueBall.Update(gameTime);
+            _tableRim.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -93,18 +86,7 @@ namespace PoolGame
 
             _spriteBatch.Begin();
 
-            _spriteBatch.Draw(
-                tableRimTexture,
-                tableRimPosition,
-                null,
-                Color.White,
-                0f,
-                new Vector2(tableRimTexture.Width / 2, tableRimTexture.Height / 2),
-                new Vector2(tableRimScale, tableRimScale),
-                SpriteEffects.None,
-                0f
-            );
-
+            _tableRim.Draw(_spriteBatch);
             _cueBall.Draw(_spriteBatch);
 
             _spriteBatch.End();
