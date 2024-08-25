@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using PoolGame.Entities;
 
 namespace PoolGame
 {
@@ -17,6 +18,9 @@ namespace PoolGame
         float tableRimScale;
         float tableScaledWidth;
         float tableScaledHeight;
+
+        CueBall _cueBall;
+        Texture2D cueBallTexture;
 
 
         public Game1()
@@ -45,8 +49,11 @@ namespace PoolGame
 
             // TODO: use this.Content to load your game content here
 
-            // tableRim properties:
             tableRimTexture = Content.Load<Texture2D>("2-1 rectangle (transparent)");
+
+            cueBallTexture = Content.Load<Texture2D>("circle 99x99");
+            _cueBall = new CueBall(cueBallTexture, Vector2.Zero, Vector2.Zero);
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -72,6 +79,9 @@ namespace PoolGame
             tableScaledHeight = tableRimTexture.Height * tableRimScale;
             tableRimPosition = new Vector2(windowWidth / 2, windowHeight - (tableScaledHeight / 2));
 
+
+            _cueBall.Update(gameTime);
+
             base.Update(gameTime);
         }
 
@@ -94,6 +104,8 @@ namespace PoolGame
                 SpriteEffects.None,
                 0f
             );
+
+            _cueBall.Draw(_spriteBatch);
 
             _spriteBatch.End();
 
