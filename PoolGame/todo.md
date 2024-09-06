@@ -4,7 +4,7 @@
 	1. make sure Sprite accounts for the window changing size
 1. update README.md
 1. finish CollideObject
-	1. make circles bounce off of other circles and rectangles
+	1. make circles 'bounce' off of other circles and rectangles
 		1. use: https://www.real-world-physics-problems.com/physics-of-billiards.html
 	1. define a 'line' collision for borders
 		1. (optional) make it work with various gradients
@@ -22,6 +22,11 @@
 	1. (add later) game select
 	1. game
 	1. settings
+
+## Ball collision physics:
+
+1. nearly elastic (simplify to be elastic), i.e. KE is conserved before and after collision
+1. 
 
 ## Misc.:
 1. 
