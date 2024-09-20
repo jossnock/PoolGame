@@ -12,7 +12,7 @@
 1. make Ball and put CueBall under it
 1. implement player-controlled movement for CueBall (basic WASD/cursor, just for testing)
 1. implement ObjectBall and make it respond to hits by moving
-1. implement Cue
+1. implement:
 	1. aiming
 	1. charging shot
 	1. shooting

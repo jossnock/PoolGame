@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+// OUT OF DATE, NEEDS UPDATE WITH OOP
+
+
 namespace PoolGame.Entities
 {
     internal class CueBall
