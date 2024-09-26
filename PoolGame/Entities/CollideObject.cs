@@ -15,7 +15,7 @@ namespace PoolGame.Entities
         public enum ObjectType
         {
             Rectangle,
-            Circle
+            Circle,
         }
         public ObjectType Type { get; set; }
 
@@ -43,6 +43,8 @@ namespace PoolGame.Entities
             {
                 this.boundingBox = new Rectangle((int)this.position.X, (int)this.position.Y, this.boundingBox.Width, this.boundingBox.Height);
             }
+
+            base.Update(gameTime);
         }
 
 
@@ -80,6 +82,8 @@ namespace PoolGame.Entities
                 }
             }
         }
+
+
 
         // methods for checking if CollideObject is colliding with another CollideObject:
 

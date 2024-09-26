@@ -13,10 +13,7 @@ namespace PoolGame
 
         private KeyboardState previousKeyboardState;
 
-        TableRim _tableRim;
-        Texture2D tableRimTexture;
-
-        CueBall _cueBall;
+        PoolBall _cueBall;
         Texture2D cueBallTexture;
 
 
@@ -45,12 +42,8 @@ namespace PoolGame
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // loading objects:
-
-            tableRimTexture = Content.Load<Texture2D>("2-1 rectangle (transparent)");
-            _tableRim = new TableRim(tableRimTexture, Vector2.Zero, Vector2.Zero, GraphicsDevice);
-
             cueBallTexture = Content.Load<Texture2D>("circle 99x99");
-            _cueBall = new CueBall(cueBallTexture, new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2));
+            _cueBall = new PoolBall(cueBallTexture, new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2), 50);
         }
 
         protected override void Update(GameTime gameTime)
@@ -71,10 +64,8 @@ namespace PoolGame
 
 
             // updating objects:
-            _tableRim.Update(gameTime);
-            _cueBall.Update(gameTime);
 
-            base.Update(gameTime);
+            _cueBall.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -85,7 +76,6 @@ namespace PoolGame
 
             _spriteBatch.Begin();
 
-            _tableRim.Draw(_spriteBatch);
             _cueBall.Draw(_spriteBatch);
 
             _spriteBatch.End();

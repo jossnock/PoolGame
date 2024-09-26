@@ -18,11 +18,13 @@ namespace PoolGame.Entities
         private Texture2D texture;
         private Vector2 position;
         private Vector2 velocity;
+        private Vector2 acceleration;
 
         public CueBall(Texture2D texture, Vector2 initPosition)
         {
             this.texture = texture;
             this.position = initPosition;
+            this.velocity = Vector2.Zero;
         }
 
         public void MoveTo(Vector2 newPosition)
