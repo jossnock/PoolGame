@@ -13,11 +13,14 @@ namespace PoolGame.Entities
     {
         private Vector2 velocity;
         private Vector2 acceleration;
+        public Vector2 decelerationDueToFriction;
+
         public PoolBall(Texture2D texture, Vector2 position, float radius) : base(texture, position, radius)
         {
             this.acceleration = new Vector2(1f, 1f);
             this.position = new Vector2(1280 / 2, 720 / 2);
         }
+
         private MouseState previousMouseState;
 
         public void ChangeVelocity()
@@ -29,28 +32,46 @@ namespace PoolGame.Entities
 
             this.velocity += Vector2.Multiply(movementVector, VelocityMultiplier);
 
+            this.decelerationDueToFriction = this.velocity * 0.01f;
 
-            // doing friction:
-            const float DecelerationDueToFriction = 0.01f;
-            if (this.velocity.X > 0)
-            {
-                this.velocity.X -= DecelerationDueToFriction;
-            }
-            if (this.velocity.X < 0)
-            {
-                this.velocity.X += DecelerationDueToFriction;
-            }
-            if (this.velocity.Y > 0)
-            {
-                this.velocity.Y -= DecelerationDueToFriction;
-            }
-            if (this.velocity.Y < 0)
-            {
-                this.velocity.Y += DecelerationDueToFriction;
-            }
         }
 
-        
+        public void DoFriction()
+        {
+            // doing friction:
+
+            if (this.velocity.X > 0.1f | this.velocity.X < -0.1f)
+            {
+                if (this.velocity.X > 0)
+                {
+                    this.velocity.X -= decelerationDueToFriction.X;
+                }
+                if (this.velocity.X < 0)
+                {
+                    this.velocity.X -= decelerationDueToFriction.X;
+                }
+            }
+            else
+            {
+                this.velocity.X = 0f;
+            }
+
+            if (this.velocity.Y > 0.1f | this.velocity.Y < -0.1f)
+            {
+                if (this.velocity.Y > 0)
+                {
+                    this.velocity.Y -= decelerationDueToFriction.Y;
+                }
+                if (this.velocity.Y < 0)
+                {
+                    this.velocity.Y -= decelerationDueToFriction.Y;
+                }
+            }
+            else
+            {
+                this.velocity.Y = 0f;
+            }
+        }        
 
         public void ChangePosition()
         {
@@ -64,6 +85,7 @@ namespace PoolGame.Entities
             {
                 this.position = new Vector2(this.position.X, this.radius);
                 this.velocity.Y = -this.velocity.Y;
+                this.decelerationDueToFriction.Y = -this.decelerationDueToFriction.Y;
             }
 
             // with bottom:
@@ -71,6 +93,7 @@ namespace PoolGame.Entities
             {
                 this.position = new Vector2(this.position.X, height - this.radius);
                 this.velocity.Y = -this.velocity.Y;
+                this.decelerationDueToFriction.Y = -this.decelerationDueToFriction.Y;
             }
 
             // with left:
@@ -78,6 +101,7 @@ namespace PoolGame.Entities
             {
                 this.position = new Vector2(this.radius, this.position.Y);
                 this.velocity.X = -this.velocity.X;
+                this.decelerationDueToFriction.X = -this.decelerationDueToFriction.X;
             }
 
             // with right:
@@ -85,6 +109,7 @@ namespace PoolGame.Entities
             {
                 this.position = new Vector2(width - this.radius, this.position.Y);
                 this.velocity.X = -this.velocity.X;
+                this.decelerationDueToFriction.X = -this.decelerationDueToFriction.X;
             }
         }
 
@@ -101,6 +126,7 @@ namespace PoolGame.Entities
 
             previousMouseState = currentMouseState;
 
+            DoFriction();
 
             ChangePosition();
 
