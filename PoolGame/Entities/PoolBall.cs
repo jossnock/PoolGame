@@ -40,7 +40,8 @@ namespace PoolGame.Entities
         {
             // doing friction:
 
-            if (this.velocity.X > 0.1f | this.velocity.X < -0.1f)
+            // horizontal:
+            if (this.velocity.X > 0.1f | this.velocity.X < -0.1f) // checking if PoolBall is moving a notable amount, if so it does friction
             {
                 if (this.velocity.X > 0)
                 {
@@ -53,10 +54,11 @@ namespace PoolGame.Entities
             }
             else
             {
-                this.velocity.X = 0f;
+                this.velocity.X = 0f; // stops PoolBall if it is moving very slowly to stop friction from making it go backwards
             }
 
-            if (this.velocity.Y > 0.1f | this.velocity.Y < -0.1f)
+            // vertical:
+            if (this.velocity.Y > 0.1f | this.velocity.Y < -0.1f) // checking if PoolBall is moving a notable amount, if so it does friction
             {
                 if (this.velocity.Y > 0)
                 {
@@ -69,7 +71,7 @@ namespace PoolGame.Entities
             }
             else
             {
-                this.velocity.Y = 0f;
+                this.velocity.Y = 0f; // stops PoolBall if it is moving very slowly to stop friction from making it go backwards
             }
         }        
 
