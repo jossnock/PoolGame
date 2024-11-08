@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using PoolGame.Entities;
+using GeonBit.UI;
+using GeonBit.UI.Entities;
 
 namespace PoolGame
 {
@@ -40,6 +42,8 @@ namespace PoolGame
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+            UserInterface.Initialize(Content, BuiltinThemes.hd); // Initialises UI
+
 
             // loading objects:
             cueBallTexture = Content.Load<Texture2D>("circle 99x99");
