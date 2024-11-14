@@ -2,9 +2,11 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
-using PoolGame.Entities;
-using GeonBit.UI;
-using GeonBit.UI.Entities;
+using PoolGame.Classes;
+using PoolGame.Classes.Screens;
+using Myra;
+using Myra.Graphics2D.UI;
+using System.IO;
 
 namespace PoolGame
 {
@@ -12,12 +14,9 @@ namespace PoolGame
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private Desktop _desktop;
 
         private KeyboardState previousKeyboardState;
-
-        PoolBall _cueBall;
-        Texture2D cueBallTexture;
-
 
         public Game1()
         {
@@ -42,12 +41,67 @@ namespace PoolGame
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            UserInterface.Initialize(Content, BuiltinThemes.hd); // Initialises UI
 
 
-            // loading objects:
-            cueBallTexture = Content.Load<Texture2D>("circle 99x99");
-            _cueBall = new PoolBall(cueBallTexture, new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2), 50);
+            // UI Setup:
+
+            // initialising Myra and loading the MyraMain.xmmp file:
+            MyraEnvironment.Game = this;
+
+            var grid = new Grid
+            {
+                RowSpacing = 8,
+                ColumnSpacing = 8,
+                ShowGridLines = true,
+            };
+
+            grid.ColumnsProportions.Add(new Proportion(ProportionType.Auto));
+            grid.ColumnsProportions.Add(new Proportion(ProportionType.Auto));
+            grid.RowsProportions.Add(new Proportion(ProportionType.Auto));
+            grid.RowsProportions.Add(new Proportion(ProportionType.Auto));
+
+            var mainMenuTitle = new Label
+            {
+                Id = "label",
+                Text = "Main Menu"
+            };
+            grid.Widgets.Add(mainMenuTitle);
+
+
+
+
+
+            // Button
+            var button = new Button
+            {
+                Content = new Label
+                {
+                    Text = "Start Match"
+                }
+            };
+            Grid.SetColumn(button, 0);
+            Grid.SetRow(button, 1);
+
+            button.Click += (s, a) =>
+            {
+                var match = new Match();
+                match.Run();
+            };
+
+            grid.Widgets.Add(button);
+
+
+
+
+            // Add it to the desktop
+            _desktop = new Desktop();
+            _desktop.Root = grid;
+
+
+
+
+
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -64,26 +118,18 @@ namespace PoolGame
                     _graphics.ApplyChanges();
                 }
             }
+
+
             previousKeyboardState = Keyboard.GetState(); // re-assign for the next Update()
+            base.Update(gameTime);
 
-
-            // updating objects:
-
-            _cueBall.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.White); // background colour
+            GraphicsDevice.Clear(Color.Gray); // background colour
 
-            // main sprite batch:
-
-            _spriteBatch.Begin();
-
-            _cueBall.Draw(_spriteBatch);
-
-            _spriteBatch.End();
-
+            _desktop.Render(); // renders Myra UI elements
 
             base.Draw(gameTime);
         }

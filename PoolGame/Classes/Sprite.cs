@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace PoolGame.Entities
+namespace PoolGame.Classes
 {
     internal abstract class Sprite // internal (can't directly create a Sprite object)
     {

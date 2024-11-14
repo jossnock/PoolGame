@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Input;
 // OUT OF DATE, NEEDS UPDATE WITH OOP
 
 
-namespace PoolGame.Entities
+namespace PoolGame.Classes
 {
     internal class CueBall
     {

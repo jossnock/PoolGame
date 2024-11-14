@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace PoolGame.Entities
+namespace PoolGame.Classes
 {
     internal class PoolBall : CollideObject
     {

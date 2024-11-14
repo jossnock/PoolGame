@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PoolGame.Entities
+namespace PoolGame.Classes
 {
     internal class CollideObject : Sprite
     {
@@ -20,7 +20,7 @@ namespace PoolGame.Entities
         public ObjectType Type { get; set; }
 
         // constructor for rectangles:
-        public CollideObject(Texture2D texture, Vector2 position, Rectangle boundingBox) 
+        public CollideObject(Texture2D texture, Vector2 position, Rectangle boundingBox)
         {
             this.texture = texture;
             this.position = position;
@@ -52,7 +52,7 @@ namespace PoolGame.Entities
         {
             if (this.Type == ObjectType.Rectangle & otherObject.Type == ObjectType.Rectangle)
             {
-                if(IsCollidingRectangleRectangle(this, otherObject))
+                if (IsCollidingRectangleRectangle(this, otherObject))
                 {
 
                 }
@@ -60,7 +60,7 @@ namespace PoolGame.Entities
 
             else if (this.Type == ObjectType.Rectangle & otherObject.Type == ObjectType.Circle)
             {
-                if(IsCollidingRectangleCircle(this, otherObject))
+                if (IsCollidingRectangleCircle(this, otherObject))
                 {
 
                 }
@@ -87,7 +87,7 @@ namespace PoolGame.Entities
 
         // methods for checking if CollideObject is colliding with another CollideObject:
 
-        private bool IsCollidingRectangleRectangle(CollideObject rectangle1,  CollideObject rectangle2)
+        private bool IsCollidingRectangleRectangle(CollideObject rectangle1, CollideObject rectangle2)
         {
             if (rectangle1.boundingBox.Intersects(rectangle2.boundingBox))
             {
