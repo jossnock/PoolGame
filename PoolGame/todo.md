@@ -29,4 +29,6 @@
 1. 
 
 ## Misc.:
-1. 
+1. use Normalize(Vector2) to make friction consistent
+1. The MonoGame Framework provides the BoundingBox, BoundingFrustum, BoundingSphere, Plane, and Ray classes for representing simplified versions of geometry for the purpose of efficient collision and hit testing.
+	1. These classes have methods for checking for intersection and containment with each other.

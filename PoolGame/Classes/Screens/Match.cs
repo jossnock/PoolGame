@@ -52,8 +52,10 @@ namespace PoolGame.Classes.Screens
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Enter))
+            {
                 Exit();
+            }
 
             // toggle fullscreen with 'F':
             if (Keyboard.GetState().IsKeyDown(Keys.F))

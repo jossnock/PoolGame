@@ -7,10 +7,11 @@ using PoolGame.Classes.Screens;
 using Myra;
 using Myra.Graphics2D.UI;
 using System.IO;
+using System.Diagnostics;
 
 namespace PoolGame
 {
-    public class Game1 : Game
+    public class MainMenu : Game
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -18,7 +19,7 @@ namespace PoolGame
 
         private KeyboardState previousKeyboardState;
 
-        public Game1()
+        public MainMenu()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -57,8 +58,12 @@ namespace PoolGame
 
             grid.ColumnsProportions.Add(new Proportion(ProportionType.Auto));
             grid.ColumnsProportions.Add(new Proportion(ProportionType.Auto));
+            grid.ColumnsProportions.Add(new Proportion(ProportionType.Auto));
+
             grid.RowsProportions.Add(new Proportion(ProportionType.Auto));
             grid.RowsProportions.Add(new Proportion(ProportionType.Auto));
+            grid.RowsProportions.Add(new Proportion(ProportionType.Auto));
+
 
             var mainMenuTitle = new Label
             {
@@ -66,10 +71,6 @@ namespace PoolGame
                 Text = "Main Menu"
             };
             grid.Widgets.Add(mainMenuTitle);
-
-
-
-
 
             // Button
             var button = new Button
@@ -82,13 +83,33 @@ namespace PoolGame
             Grid.SetColumn(button, 0);
             Grid.SetRow(button, 1);
 
+            // Button
+            var button2 = new Button
+            {
+                Content = new Label
+                {
+                    Text = "Start wewsweg"
+                }
+            };
+            Grid.SetColumn(button2, 0);
+            Grid.SetRow(button2, 2);
+
+
+
             button.Click += (s, a) =>
             {
-                var match = new Match();
+                Match match = new Match();
                 match.Run();
             };
 
+            button2.Click += (s, a) =>
+            {
+                Console.WriteLine("tresdaegvesrg");
+            };
+
             grid.Widgets.Add(button);
+            grid.Widgets.Add(button2);
+
 
 
 
@@ -107,7 +128,9 @@ namespace PoolGame
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
                 Exit();
+            }
 
             // toggle fullscreen with 'F':
             if (Keyboard.GetState().IsKeyDown(Keys.F))
