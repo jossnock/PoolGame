@@ -17,6 +17,9 @@ namespace PoolGame
         private SpriteBatch _spriteBatch;
         private Desktop _desktop;
 
+        public static int windowWidth {  get;  set; }
+        public static int windowHeight {  get;  set; }
+
         private KeyboardState previousKeyboardState;
 
         public MainMenu()
@@ -25,8 +28,10 @@ namespace PoolGame
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-            _graphics.PreferredBackBufferWidth = 1280; // default window width
-            _graphics.PreferredBackBufferHeight = 720; // default window height
+            windowWidth = 1280;
+            windowHeight = 720;
+            _graphics.PreferredBackBufferWidth = windowWidth; // default window width
+            _graphics.PreferredBackBufferHeight = windowHeight; // default window height
             _graphics.ApplyChanges();
 
             Window.AllowUserResizing = true;
@@ -58,9 +63,6 @@ namespace PoolGame
 
             grid.ColumnsProportions.Add(new Proportion(ProportionType.Auto));
             grid.ColumnsProportions.Add(new Proportion(ProportionType.Auto));
-            grid.ColumnsProportions.Add(new Proportion(ProportionType.Auto));
-
-            grid.RowsProportions.Add(new Proportion(ProportionType.Auto));
             grid.RowsProportions.Add(new Proportion(ProportionType.Auto));
             grid.RowsProportions.Add(new Proportion(ProportionType.Auto));
 
@@ -83,46 +85,17 @@ namespace PoolGame
             Grid.SetColumn(button, 0);
             Grid.SetRow(button, 1);
 
-            // Button
-            var button2 = new Button
-            {
-                Content = new Label
-                {
-                    Text = "Start wewsweg"
-                }
-            };
-            Grid.SetColumn(button2, 0);
-            Grid.SetRow(button2, 2);
-
-
-
             button.Click += (s, a) =>
             {
-                Match match = new Match();
+                Match1 match = new Match1();
                 match.Run();
             };
 
-            button2.Click += (s, a) =>
-            {
-                Console.WriteLine("tresdaegvesrg");
-            };
-
             grid.Widgets.Add(button);
-            grid.Widgets.Add(button2);
-
-
-
-
 
             // Add it to the desktop
             _desktop = new Desktop();
             _desktop.Root = grid;
-
-
-
-
-
-
         }
 
         protected override void Update(GameTime gameTime)

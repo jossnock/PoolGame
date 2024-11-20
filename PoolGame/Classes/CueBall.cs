@@ -7,53 +7,41 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
-// OUT OF DATE, NEEDS UPDATE WITH OOP
-
+using PoolGame;
 
 namespace PoolGame.Classes
 {
-    internal class CueBall
+    internal class CueBall : PoolBall
     {
-        private Texture2D texture;
-        private Vector2 position;
-        private Vector2 velocity;
-        private Vector2 acceleration;
+        private MouseState previousMouseState;
 
-        public CueBall(Texture2D texture, Vector2 initPosition)
+        public CueBall(Texture2D texture, float radius) : base(texture, radius)
         {
-            this.texture = texture;
-            this.position = initPosition;
-            this.velocity = Vector2.Zero;
+            acceleration = Vector2.Zero;
+            position = new Vector2(MainMenu.windowWidth / 5, MainMenu.windowHeight / 2);
         }
 
-        public void MoveTo(Vector2 newPosition)
+        public void Shoot()
         {
-            this.position = newPosition;
-        }
+            Vector2 mousePosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+            Vector2 movementVector = mousePosition - position;
 
-        public void Velocity()
-        {
+            velocity += movementVector * VelocityMultiplier;
 
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
 
-        }
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(
-                texture,
-                position,
-                null,
-                Color.White,
-                0f,
-                new Vector2(texture.Width / 2, texture.Height / 2), // centre of sprite
-                Vector2.One,
-                SpriteEffects.None,
-                0f
-            );
+            MouseState currentMouseState = Mouse.GetState();
+
+            if ((currentMouseState.LeftButton == ButtonState.Pressed) & (velocity == Vector2.Zero)) // only allowed to input movement when stationary
+            {
+                Shoot();
+            }
+
+            previousMouseState = currentMouseState;
         }
     }
 }

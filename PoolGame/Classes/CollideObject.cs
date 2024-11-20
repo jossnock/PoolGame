@@ -20,10 +20,10 @@ namespace PoolGame.Classes
         public ObjectType Type { get; set; }
 
         // constructor for rectangles:
-        public CollideObject(Texture2D texture, Vector2 position, Rectangle boundingBox)
+        public CollideObject(Texture2D texture, Vector2 initialPosition, Rectangle boundingBox)
         {
             this.texture = texture;
-            this.position = position;
+            this.position = initialPosition;
             this.boundingBox = boundingBox;
             this.Type = ObjectType.Rectangle;
         }
@@ -33,6 +33,14 @@ namespace PoolGame.Classes
         {
             this.texture = texture;
             this.position = position;
+            this.radius = radius;
+            this.Type = ObjectType.Circle;
+        }
+
+        public CollideObject(Texture2D texture, float radius) // allowing CueBall to have a constructor that doesn't need initialPosition
+        {
+            this.texture = texture;
+            this.position = Vector2.Zero;
             this.radius = radius;
             this.Type = ObjectType.Circle;
         }

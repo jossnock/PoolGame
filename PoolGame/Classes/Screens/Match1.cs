@@ -9,33 +9,42 @@ using Microsoft.Xna.Framework.Input;
 
 namespace PoolGame.Classes.Screens
 {
-    internal class Match : Game
+    internal class Match1 : Game
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
         private KeyboardState previousKeyboardState;
 
-        PoolBall _cueBall;
-        Texture2D cueBallTexture;
+        public CueBall _cueBall;
+        public Texture2D cueBallTexture;
 
+        public PoolBall _poolBall1;
 
-        public Match()
+        public static PoolBall[] poolBalls;
+
+        public Match1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-            _graphics.PreferredBackBufferWidth = 1280; // default window width
-            _graphics.PreferredBackBufferHeight = 720; // default window height
+            _graphics.PreferredBackBufferWidth = MainMenu.windowWidth; // default window width
+            _graphics.PreferredBackBufferHeight = MainMenu.windowHeight; // default window height
             _graphics.ApplyChanges();
-
-            Window.AllowUserResizing = true;
         }
 
         protected override void Initialize()
         {
             previousKeyboardState = Keyboard.GetState(); // getting the starting state of the keyboard, so that fullscreen can be used
+
+            // initialising objects:
+            cueBallTexture = Content.Load<Texture2D>("circle 99x99");
+            _cueBall = new CueBall(cueBallTexture, 50);
+
+            _poolBall1 = new PoolBall(cueBallTexture, new Vector2(MainMenu.windowWidth / 2, MainMenu.windowHeight / 2), 50);
+
+            poolBalls = new PoolBall[] { _cueBall, _poolBall1 };
 
             base.Initialize();
         }
@@ -43,11 +52,6 @@ namespace PoolGame.Classes.Screens
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-
-            // loading objects:
-            cueBallTexture = Content.Load<Texture2D>("circle 99x99");
-            _cueBall = new PoolBall(cueBallTexture, new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2), 50);
         }
 
         protected override void Update(GameTime gameTime)
@@ -72,6 +76,7 @@ namespace PoolGame.Classes.Screens
             // updating objects:
 
             _cueBall.Update(gameTime);
+            _poolBall1.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -83,6 +88,7 @@ namespace PoolGame.Classes.Screens
             _spriteBatch.Begin();
 
             _cueBall.Draw(_spriteBatch);
+            _poolBall1.Draw(_spriteBatch);
 
             _spriteBatch.End();
 

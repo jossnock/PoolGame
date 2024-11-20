@@ -6,112 +6,150 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using PoolGame;
+using PoolGame.Classes.Screens;
+using System.Text.RegularExpressions;
 
 namespace PoolGame.Classes
 {
     internal class PoolBall : CollideObject
     {
-        private Vector2 velocity;
-        private Vector2 acceleration;
-        public Vector2 decelerationDueToFriction;
+        // all PoolBall objects have a mass of 1,
+        // meaning that a PoolBall's velocity is always equal to its momentum
+        // and its acceleration/deceleration is always equal to the resultant force acting upon it,
+        // so I will only use velocityt and acceleration/deceleration in calculations for simplicity.
 
-        public PoolBall(Texture2D texture, Vector2 position, float radius) : base(texture, position, radius)
+        public Vector2 velocity { get; set; }
+        public const float VelocityMultiplier = 2/(50f);
+
+        public Vector2 acceleration { get; set; }
+        public Vector2 decelerationDueToFriction { get; set; }
+        public const float coefficientOfFriction = 0.01f;
+
+        public PoolBall(Texture2D texture, Vector2 initialPosition, float radius) : base(texture, initialPosition, radius)
         {
-            this.acceleration = new Vector2(1f, 1f);
-            this.position = new Vector2(1280 / 2, 720 / 2);
+            acceleration = Vector2.Zero;
+            position = initialPosition;
         }
 
-        private MouseState previousMouseState;
-
-        public void ChangeVelocity()
+        public PoolBall(Texture2D texture, float radius) : base(texture, radius) // allowing CueBall to have a constructor that doesn't need initialPosition
         {
-            Vector2 destination = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
-            Vector2 movementVector = destination - this.position;
-
-            const float VelocityMultiplier = 1280f / (1280f * 50f);
-
-            this.velocity += Vector2.Multiply(movementVector, VelocityMultiplier);
-
-            this.decelerationDueToFriction = this.velocity * 0.01f;
-
+            acceleration = Vector2.Zero;
+            position = Vector2.Zero;
         }
 
         public void DoFriction()
         {
-            // doing friction:
-
             // horizontal:
-            if (this.velocity.X > 0.1f | this.velocity.X < -0.1f) // checking if PoolBall is moving a notable amount, if so it does friction
+            if (Math.Abs(velocity.X) > Math.Abs(decelerationDueToFriction.X)) // if x velocity is less than x decelerationDueToFriction,
+                                                                              // decelerating causes the velocity to change sign,
+                                                                              // meaning it moves backwards (relative to its original direction) which isn't how friction works
             {
-                if (this.velocity.X > 0)
-                {
-                    this.velocity.X -= decelerationDueToFriction.X;
-                }
-                if (this.velocity.X < 0)
-                {
-                    this.velocity.X -= decelerationDueToFriction.X;
-                }
+                velocity = new Vector2(velocity.X - decelerationDueToFriction.X, velocity.Y); // decelerating
             }
             else
             {
-                this.velocity.X = 0f; // stops PoolBall if it is moving very slowly to stop friction from making it go backwards
+                velocity = new Vector2(0, velocity.Y); // stops PoolBall if it is moving very slowly to stop friction from making it go backwards
+                decelerationDueToFriction = new Vector2(0, decelerationDueToFriction.Y); // prevents friction from changing x component of velocity when it's zero
             }
 
             // vertical:
-            if (this.velocity.Y > 0.1f | this.velocity.Y < -0.1f) // checking if PoolBall is moving a notable amount, if so it does friction
+            if (Math.Abs(velocity.Y) > Math.Abs(decelerationDueToFriction.Y)) // if x velocity is less than x decelerationDueToFriction,
+                                                                              // decelerating causes the velocity to change sign,
+                                                                              // meaning it moves backwards (relative to its original direction) which isn't how friction works
             {
-                if (this.velocity.Y > 0)
-                {
-                    this.velocity.Y -= decelerationDueToFriction.Y;
-                }
-                if (this.velocity.Y < 0)
-                {
-                    this.velocity.Y -= decelerationDueToFriction.Y;
-                }
+                velocity = new Vector2(velocity.X, velocity.Y - decelerationDueToFriction.Y); // decelerating
             }
             else
             {
-                this.velocity.Y = 0f; // stops PoolBall if it is moving very slowly to stop friction from making it go backwards
+                velocity = new Vector2(velocity.X, 0); // stops PoolBall if it is moving very slowly to stop friction from making it go backwards
+                decelerationDueToFriction = new Vector2(decelerationDueToFriction.X, 0); // prevents friction from changing y component of velocity when it's zero
             }
-        }        
+        }
 
         public void ChangePosition()
         {
-            this.position += this.velocity;
+            decelerationDueToFriction = velocity * coefficientOfFriction;
+
+            position += velocity - decelerationDueToFriction;
         }
 
-        public void DoCircleBoundsCollision(int height, int width)
+        public void DoBoundsCollision()
         {
             // with top:
-            if (this.position.Y - this.radius < 0)
+            // -------------
+            // |     O     |
+            // |           |
+            // |           |
+            // -------------
+            if (position.Y - radius < 0)
             {
-                this.position = new Vector2(this.position.X, this.radius);
-                this.velocity.Y = -this.velocity.Y;
-                this.decelerationDueToFriction.Y = -this.decelerationDueToFriction.Y;
+                position = new Vector2(position.X, radius); // keeping in bounds if it clips out
+                velocity = new Vector2(velocity.X, -velocity.Y); // reversing part of it to give the effect of an elastic collision
+                decelerationDueToFriction = new Vector2(decelerationDueToFriction.X, -decelerationDueToFriction.Y);
             }
 
             // with bottom:
-            if (this.position.Y + this.radius > height)
+            // -------------
+            // |           |
+            // |           |
+            // |     O     |
+            // -------------
+            if (position.Y + radius > MainMenu.windowHeight)
             {
-                this.position = new Vector2(this.position.X, height - this.radius);
-                this.velocity.Y = -this.velocity.Y;
-                this.decelerationDueToFriction.Y = -this.decelerationDueToFriction.Y;
+                position = position = new Vector2(position.X, MainMenu.windowHeight - radius); // keeping in bounds if it clips out
+                velocity = new Vector2(velocity.X, -velocity.Y); // reversing part of it to give the effect of an elastic collision
+                decelerationDueToFriction = new Vector2(decelerationDueToFriction.X, -decelerationDueToFriction.Y); // reversing part of it to prevent it from speeding up PoolBall
             }
 
             // with left:
-            if (this.position.X - this.radius < 0)
+            // -------------
+            // |           |
+            // | O         |
+            // |           |
+            // -------------
+            if (position.X - radius < 0)
             {
-                this.position = new Vector2(this.radius, this.position.Y);
-                this.velocity.X = -this.velocity.X;
-                this.decelerationDueToFriction.X = -this.decelerationDueToFriction.X;
+                position = new Vector2(radius, position.Y); // keeping in bounds if it clips out
+                velocity = new Vector2(-velocity.X, velocity.Y); // reversing part of it to give the effect of an elastic collision
+                decelerationDueToFriction = new Vector2(-decelerationDueToFriction.X, decelerationDueToFriction.Y); // reversing part of it to prevent it from speeding up PoolBall
             }
 
             // with right:
-            if (this.position.X + this.radius > width)
+            // -------------
+            // |           |
+            // |         O |
+            // |           |
+            // -------------
+            if (position.X + radius > MainMenu.windowWidth)
             {
-                this.position = new Vector2(width - this.radius, this.position.Y);
-                this.velocity.X = -this.velocity.X;
-                this.decelerationDueToFriction.X = -this.decelerationDueToFriction.X;
+                position = new Vector2(MainMenu.windowWidth - radius, position.Y); // keeping in bounds if it clips out
+                velocity = new Vector2(-velocity.X, velocity.Y); // reversing part of it to give the effect of an elastic collision
+                decelerationDueToFriction = new Vector2(-decelerationDueToFriction.X, decelerationDueToFriction.Y); // reversing part of it to prevent it from speeding up PoolBall
+            }
+        }
+
+        public void DoCircleCircleCollision()
+        {
+            foreach (PoolBall poolBall in Match1.poolBalls)
+            {
+                if (poolBall == this) // no need to check if it collides with itself
+                    { continue; }
+                else 
+                {
+                    if (Vector2.Distance(poolBall.position, position) < radius * 2)
+                    {
+                        //// [placeholder, for testing]:
+                        //poolBall.velocity = Vector2.Zero;
+                        //velocity = Vector2.Zero;
+
+                        // WIP:
+
+                        poolBall.velocity = (poolBall.position - position) * VelocityMultiplier;
+                        // velocity = new Vector2(position.Y - poolBall.position.Y, poolBall.position.X - position.X) * VelocityMultiplier;
+
+                    }
+                }
             }
         }
 
@@ -121,18 +159,13 @@ namespace PoolGame.Classes
 
             MouseState currentMouseState = Mouse.GetState();
 
-            if ((currentMouseState.LeftButton == ButtonState.Pressed) & (this.velocity == Vector2.Zero))
-            {
-                ChangeVelocity();
-            }
-
-            previousMouseState = currentMouseState;
-
             DoFriction();
 
             ChangePosition();
 
-            DoCircleBoundsCollision(720, 1280);
+            DoBoundsCollision();
+
+            DoCircleCircleCollision();
         }
     }
 }
