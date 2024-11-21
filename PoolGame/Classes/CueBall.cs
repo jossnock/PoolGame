@@ -41,23 +41,12 @@ namespace PoolGame.Classes
                 {
                     if (Vector2.Distance(poolBall.position, position) < radius * 2)
                     {
-                        // [placeholder, for testing]:
-                        // poolBall.velocity = Vector2.Zero;
-                        // velocity = Vector2.Zero;
-
-                        // WIP:
-
-
                         Vector2 initVelocity = velocity;
                         Vector2 stationaryBallDirection = (poolBall.position - position);
-                        float velocityMultiplier = ((initVelocity.X * stationaryBallDirection.X) + (initVelocity.Y * stationaryBallDirection.Y)) / ((stationaryBallDirection.X * stationaryBallDirection.X) +(stationaryBallDirection.Y * stationaryBallDirection.Y));
-                        Vector2 StationaryBallVelocity = stationaryBallDirection * velocityMultiplier;
-                        Vector2 movingBallVelocity = initVelocity - StationaryBallVelocity;
-
-
-                        velocity = movingBallVelocity;
-                        poolBall.velocity = StationaryBallVelocity;
-
+                        float velocityMultiplier = ((initVelocity.X * stationaryBallDirection.X) + (initVelocity.Y * stationaryBallDirection.Y)) 
+                            / ((stationaryBallDirection.X * stationaryBallDirection.X) +(stationaryBallDirection.Y * stationaryBallDirection.Y));
+                        poolBall.velocity = stationaryBallDirection * velocityMultiplier;
+                        velocity = initVelocity - poolBall.velocity;
                     }
                 }
             }

@@ -41,7 +41,7 @@ namespace PoolGame.Classes
         public void DoFriction()
         {
             // horizontal:
-            if (Math.Abs(velocity.X) > 0.01) // if x velocity is less than x decelerationDueToFriction,
+            if (Math.Abs(velocity.X) > 0.1) // if x velocity is less than x decelerationDueToFriction,
                                                                               // decelerating causes the velocity to change sign,
                                                                               // meaning it moves backwards (relative to its original direction) which isn't how friction works
             {
@@ -54,7 +54,7 @@ namespace PoolGame.Classes
             }
 
             // vertical:
-            if (Math.Abs(velocity.Y) > 0.01) // if x velocity is less than x decelerationDueToFriction,
+            if (Math.Abs(velocity.Y) > 0.1) // if x velocity is less than x decelerationDueToFriction,
                                                                               // decelerating causes the velocity to change sign,
                                                                               // meaning it moves backwards (relative to its original direction) which isn't how friction works
             {
