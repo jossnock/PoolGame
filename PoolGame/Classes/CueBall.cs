@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PoolGame;
+using PoolGame.Classes.Screens;
 
 namespace PoolGame.Classes
 {
@@ -30,9 +31,43 @@ namespace PoolGame.Classes
 
         }
 
+        public void DoCircleCircleCollision()
+        {
+            foreach (PoolBall poolBall in Match1.poolBalls)
+            {
+                if (poolBall == this) // no need to check if it collides with itself
+                { continue; }
+                else
+                {
+                    if (Vector2.Distance(poolBall.position, position) < radius * 2)
+                    {
+                        // [placeholder, for testing]:
+                        // poolBall.velocity = Vector2.Zero;
+                        // velocity = Vector2.Zero;
+
+                        // WIP:
+
+
+                        Vector2 initVelocity = velocity;
+                        Vector2 stationaryBallDirection = (poolBall.position - position);
+                        float velocityMultiplier = ((initVelocity.X * stationaryBallDirection.X) + (initVelocity.Y * stationaryBallDirection.Y)) / ((stationaryBallDirection.X * stationaryBallDirection.X) +(stationaryBallDirection.Y * stationaryBallDirection.Y));
+                        Vector2 StationaryBallVelocity = stationaryBallDirection * velocityMultiplier;
+                        Vector2 movingBallVelocity = initVelocity - StationaryBallVelocity;
+
+
+                        velocity = movingBallVelocity;
+                        poolBall.velocity = StationaryBallVelocity;
+
+                    }
+                }
+            }
+        }
+
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            DoCircleCircleCollision();
 
             MouseState currentMouseState = Mouse.GetState();
 

@@ -41,7 +41,7 @@ namespace PoolGame.Classes
         public void DoFriction()
         {
             // horizontal:
-            if (Math.Abs(velocity.X) > Math.Abs(decelerationDueToFriction.X)) // if x velocity is less than x decelerationDueToFriction,
+            if (Math.Abs(velocity.X) > 0.01) // if x velocity is less than x decelerationDueToFriction,
                                                                               // decelerating causes the velocity to change sign,
                                                                               // meaning it moves backwards (relative to its original direction) which isn't how friction works
             {
@@ -54,7 +54,7 @@ namespace PoolGame.Classes
             }
 
             // vertical:
-            if (Math.Abs(velocity.Y) > Math.Abs(decelerationDueToFriction.Y)) // if x velocity is less than x decelerationDueToFriction,
+            if (Math.Abs(velocity.Y) > 0.01) // if x velocity is less than x decelerationDueToFriction,
                                                                               // decelerating causes the velocity to change sign,
                                                                               // meaning it moves backwards (relative to its original direction) which isn't how friction works
             {
@@ -129,29 +129,10 @@ namespace PoolGame.Classes
             }
         }
 
-        public void DoCircleCircleCollision()
-        {
-            foreach (PoolBall poolBall in Match1.poolBalls)
-            {
-                if (poolBall == this) // no need to check if it collides with itself
-                    { continue; }
-                else 
-                {
-                    if (Vector2.Distance(poolBall.position, position) < radius * 2)
-                    {
-                        //// [placeholder, for testing]:
-                        //poolBall.velocity = Vector2.Zero;
-                        //velocity = Vector2.Zero;
-
-                        // WIP:
-
-                        poolBall.velocity = (poolBall.position - position) * VelocityMultiplier;
-                        // velocity = new Vector2(position.Y - poolBall.position.Y, poolBall.position.X - position.X) * VelocityMultiplier;
-
-                    }
-                }
-            }
-        }
+        //public void DoCircleCircleCollision()
+        //{
+        //  
+        //}
 
         public override void Update(GameTime gameTime)
         {
@@ -165,7 +146,7 @@ namespace PoolGame.Classes
 
             DoBoundsCollision();
 
-            DoCircleCircleCollision();
+            //DoCircleCircleCollision();
         }
     }
 }
