@@ -20,7 +20,7 @@ namespace PoolGame.Classes
         // so I will only use velocityt and acceleration/deceleration in calculations for simplicity.
 
         public Vector2 velocity { get; set; }
-        public const float VelocityMultiplier = 2/(50f);
+        public const float VelocityMultiplier = 2 / (50f);
 
         public Vector2 acceleration { get; set; }
         public Vector2 decelerationDueToFriction { get; set; }
@@ -42,8 +42,8 @@ namespace PoolGame.Classes
         {
             // horizontal:
             if (Math.Abs(velocity.X) > 0.1) // if x velocity is less than x decelerationDueToFriction,
-                                                                              // decelerating causes the velocity to change sign,
-                                                                              // meaning it moves backwards (relative to its original direction) which isn't how friction works
+                                            // decelerating causes the velocity to change sign,
+                                            // meaning it moves backwards (relative to its original direction) which isn't how friction works
             {
                 velocity = new Vector2(velocity.X - decelerationDueToFriction.X, velocity.Y); // decelerating
             }
@@ -55,8 +55,8 @@ namespace PoolGame.Classes
 
             // vertical:
             if (Math.Abs(velocity.Y) > 0.1) // if x velocity is less than x decelerationDueToFriction,
-                                                                              // decelerating causes the velocity to change sign,
-                                                                              // meaning it moves backwards (relative to its original direction) which isn't how friction works
+                                            // decelerating causes the velocity to change sign,
+                                            // meaning it moves backwards (relative to its original direction) which isn't how friction works
             {
                 velocity = new Vector2(velocity.X, velocity.Y - decelerationDueToFriction.Y); // decelerating
             }
@@ -129,10 +129,15 @@ namespace PoolGame.Classes
             }
         }
 
-        //public void DoCircleCircleCollision()
-        //{
-        //  
-        //}
+        public Vector2 FindFinalVelocityAfterCircleCircleCollision(PoolBall poolBall1, PoolBall poolBall2) // returns poolBall1's final velocity
+        {
+            Vector2 relativePositionVector = poolBall1.position - poolBall2.position; // the vector that is normal to the collision surface (aka other ball)
+            Vector2 unitNormalVector = relativePositionVector / relativePositionVector.Length(); // normalised to have a magnitude of 1
+
+            return poolBall1.velocity + (Vector2.Dot(poolBall2.velocity - poolBall1.velocity, unitNormalVector) * unitNormalVector); // check writeup for full derivation
+        }
+
+        
 
         public override void Update(GameTime gameTime)
         {
@@ -140,13 +145,13 @@ namespace PoolGame.Classes
 
             MouseState currentMouseState = Mouse.GetState();
 
+            DoBoundsCollision();
+
+            // DoCircleCircleCollision();
+
             DoFriction();
 
             ChangePosition();
-
-            DoBoundsCollision();
-
-            //DoCircleCircleCollision();
         }
     }
 }

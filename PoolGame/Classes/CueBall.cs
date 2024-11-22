@@ -39,18 +39,26 @@ namespace PoolGame.Classes
                 { continue; }
                 else
                 {
-                    if (Vector2.Distance(poolBall.position, position) < radius * 2)
+                    if (Vector2.Distance(position, poolBall.position) <= radius * 2)
                     {
-                        Vector2 initVelocity = velocity;
-                        Vector2 stationaryBallDirection = (poolBall.position - position);
-                        float velocityMultiplier = ((initVelocity.X * stationaryBallDirection.X) + (initVelocity.Y * stationaryBallDirection.Y)) 
-                            / ((stationaryBallDirection.X * stationaryBallDirection.X) +(stationaryBallDirection.Y * stationaryBallDirection.Y));
-                        poolBall.velocity = stationaryBallDirection * velocityMultiplier;
-                        velocity = initVelocity - poolBall.velocity;
+                        // WIP [update to use FindFinalVelocityAfterCircleCircleCollision() and be in PoolBall.cs]
+
+                        if (Vector2.Distance(position, poolBall.position) <= radius * 2)
+                        {
+                            Vector2 relativePositionVector = position - poolBall.position; // the vector that is normal to the collision surface (aka other ball)
+                            Vector2 unitNormalVector = relativePositionVector / relativePositionVector.Length(); // normalised to have a magnitude of 1
+
+                            Vector2 newVelocity = velocity + (Vector2.Dot(poolBall.velocity - velocity, unitNormalVector) * unitNormalVector);
+                            Vector2 newOtherVelocity = poolBall.velocity + (Vector2.Dot(velocity - poolBall.velocity, unitNormalVector) * unitNormalVector);
+
+                            poolBall.velocity = newOtherVelocity;
+                            velocity = newVelocity;
+                        }
                     }
                 }
             }
         }
+
 
         public override void Update(GameTime gameTime)
         {
