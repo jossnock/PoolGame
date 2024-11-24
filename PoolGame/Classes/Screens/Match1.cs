@@ -34,6 +34,50 @@ namespace PoolGame.Classes.Screens
             _graphics.ApplyChanges();
         }
 
+        public Vector2 FindVelocityAfterCircleCircleCollision(PoolBall poolBall1, PoolBall poolBall2) // returns poolBall1's final velocity
+        {
+            Vector2 relativePositionVector = poolBall1.position - poolBall2.position; // the vector that is normal to the collision surface (aka other ball)
+            Vector2 unitNormalVector = relativePositionVector / relativePositionVector.Length(); // normalised to have a magnitude of 1
+
+            return poolBall1.velocity + (Vector2.Dot(poolBall2.velocity - poolBall1.velocity, unitNormalVector) * unitNormalVector); // check writeup for full derivation
+        }
+
+        public void DoCircleCircleCollision()
+        {
+            for (int i = 0; i < poolBalls.Length - 1; i++)
+            {
+                for (int j = i + 1; j < poolBalls.Length; j++)
+                {
+                    if (poolBalls[i] == poolBalls[j]) // no need to check if it collides with itself
+                    { continue; }
+                    else
+                    {
+                        if (Vector2.Distance(poolBalls[i].position, poolBalls[j].position) <= poolBalls[i].radius * 2)
+                        {
+                            // WIP [update to use FindVelocityAfterCircleCircleCollision() and be in PoolBall.cs]
+
+                            // old version in CueBall.cs:
+
+                            Vector2 relativePositionVector = poolBalls[i].position - poolBalls[j].position; // the vector that is normal to the collision surface (aka other ball)
+                            Vector2 unitNormalVector = relativePositionVector / relativePositionVector.Length(); // normalised to have a magnitude of 1
+
+                            Vector2 newVelocity = poolBalls[i].velocity + (Vector2.Dot(poolBalls[j].velocity - poolBalls[i].velocity, unitNormalVector) * unitNormalVector);
+                            Vector2 newOtherVelocity = poolBalls[j].velocity + (Vector2.Dot(poolBalls[i].velocity - poolBalls[j].velocity, unitNormalVector) * unitNormalVector);
+
+                            poolBalls[j].velocity = newOtherVelocity;
+                            poolBalls[i].velocity = newVelocity;
+
+                            // WIP new version:
+
+
+
+
+                        }
+                    }
+                }
+            }
+        }
+
         protected override void Initialize()
         {
             previousKeyboardState = Keyboard.GetState(); // getting the starting state of the keyboard, so that fullscreen can be used
@@ -74,6 +118,8 @@ namespace PoolGame.Classes.Screens
 
 
             // updating objects:
+
+            DoCircleCircleCollision();
 
             _cueBall.Update(gameTime);
             _poolBall1.Update(gameTime);

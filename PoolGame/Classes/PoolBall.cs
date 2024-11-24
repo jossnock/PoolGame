@@ -129,13 +129,7 @@ namespace PoolGame.Classes
             }
         }
 
-        public Vector2 FindFinalVelocityAfterCircleCircleCollision(PoolBall poolBall1, PoolBall poolBall2) // returns poolBall1's final velocity
-        {
-            Vector2 relativePositionVector = poolBall1.position - poolBall2.position; // the vector that is normal to the collision surface (aka other ball)
-            Vector2 unitNormalVector = relativePositionVector / relativePositionVector.Length(); // normalised to have a magnitude of 1
-
-            return poolBall1.velocity + (Vector2.Dot(poolBall2.velocity - poolBall1.velocity, unitNormalVector) * unitNormalVector); // check writeup for full derivation
-        }
+        
 
         
 
