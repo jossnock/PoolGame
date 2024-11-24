@@ -129,10 +129,6 @@ namespace PoolGame.Classes
             }
         }
 
-        
-
-        
-
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
@@ -140,8 +136,6 @@ namespace PoolGame.Classes
             MouseState currentMouseState = Mouse.GetState();
 
             DoBoundsCollision();
-
-            // DoCircleCircleCollision();
 
             DoFriction();
 

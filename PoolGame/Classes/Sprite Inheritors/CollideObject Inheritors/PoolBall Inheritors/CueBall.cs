@@ -35,11 +35,11 @@ namespace PoolGame.Classes
         {
             base.Update(gameTime);
 
-            // DoCircleCircleCollision();
+            // DoAllPoolBallPoolBallCollisions();
 
             MouseState currentMouseState = Mouse.GetState();
 
-            if ((currentMouseState.LeftButton == ButtonState.Pressed) & (velocity == Vector2.Zero)) // only allowed to input movement when stationary
+            if ((currentMouseState.LeftButton == ButtonState.Pressed) & (Match1.IsAllStationary() == true)) // only allowed to input movement when stationary
             {
                 Shoot();
             }

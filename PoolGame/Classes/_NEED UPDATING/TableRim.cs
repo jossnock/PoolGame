@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+// ALL OUT OF DATE
+
 namespace PoolGame.Classes
 {
     internal class TableRim

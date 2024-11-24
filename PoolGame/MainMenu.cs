@@ -13,9 +13,9 @@ namespace PoolGame
 {
     public class MainMenu : Game
     {
-        private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
-        private Desktop _desktop;
+        public GraphicsDeviceManager _graphics;
+        public SpriteBatch _spriteBatch;
+        public Desktop _desktop;
 
         public static int windowWidth {  get;  set; }
         public static int windowHeight {  get;  set; }
@@ -28,6 +28,7 @@ namespace PoolGame
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
+            // [placeholder resolution]
             windowWidth = 1280;
             windowHeight = 720;
             _graphics.PreferredBackBufferWidth = windowWidth; // default window width
