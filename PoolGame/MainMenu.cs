@@ -15,7 +15,7 @@ namespace PoolGame
 {
     public class MainMenu : Game
     {
-        enum ScreenState
+        enum ScreenState // screen states
         {
             MainMenu,
             Match
