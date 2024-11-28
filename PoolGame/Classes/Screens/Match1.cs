@@ -14,96 +14,97 @@ namespace PoolGame.Classes.Screens
 {
     internal class Match1 : Game
     {
-        private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
+        //private GraphicsDeviceManager _graphics;
+        //private SpriteBatch _spriteBatch;
 
-        private KeyboardState previousKeyboardState;
+        //private KeyboardState previousKeyboardState;
 
-        public static PoolBall[] poolBalls;
-
-        // sizing:
-        // using the approx. scale 1cm : 8px
-        public static int poolBallRadius;
-        public static int pocketRadius;
-        public static int tablePocketSpacing;
+        //// sizing:
+        //// using the approx. scale 1cm : 8px
+        //public static int poolBallRadius;
+        //public static int pocketRadius;
+        //public static int tablePocketSpacing;
 
 
-        // bool balls:
+        //// pool balls:
 
-        public CueBall _cueBall;
-        public Texture2D cueBallTexture; // [placeholder texture], should be ~1/20 the height of the table, currently 40x40 pixels
+        //public CueBall _cueBall;
+        //public Texture2D cueBallTexture; // [placeholder texture], should be ~1/20 the height of the table, currently 40x40 pixels
 
-        public ObjectBall _eightBall;
-        public Texture2D eightBallTexture; // [placeholder texture], should be ~1/20 the height of the table, currently 40x40 pixels
+        //public ObjectBall _eightBall;
+        //public Texture2D eightBallTexture; // [placeholder texture], should be ~1/20 the height of the table, currently 40x40 pixels
 
-        public ObjectBall _solidObjectBall1;
-        public ObjectBall _solidObjectBall2;
-        public ObjectBall _solidObjectBall3;
-        public ObjectBall _solidObjectBall4;
-        public ObjectBall _solidObjectBall5;
-        public ObjectBall _solidObjectBall6;
-        public ObjectBall _solidObjectBall7;
-        public Texture2D solidObjectBallTexture; // [placeholder texture], should be ~1/20 the height of the table, currently 40x40 pixels
+        //public ObjectBall _solidObjectBall1;
+        //public ObjectBall _solidObjectBall2;
+        //public ObjectBall _solidObjectBall3;
+        //public ObjectBall _solidObjectBall4;
+        //public ObjectBall _solidObjectBall5;
+        //public ObjectBall _solidObjectBall6;
+        //public ObjectBall _solidObjectBall7;
+        //public Texture2D solidObjectBallTexture; // [placeholder texture], should be ~1/20 the height of the table, currently 40x40 pixels
 
-        public ObjectBall _stripedObjectBall1;
-        public ObjectBall _stripedObjectBall2;
-        public ObjectBall _stripedObjectBall3;
-        public ObjectBall _stripedObjectBall4;
-        public ObjectBall _stripedObjectBall5;
-        public ObjectBall _stripedObjectBall6;
-        public ObjectBall _stripedObjectBall7;
-        public Texture2D stripedObjectBallTexture; // [placeholder texture], should be ~1/20 the height of the table, currently 40x40 pixels
+        //public ObjectBall _stripedObjectBall1;
+        //public ObjectBall _stripedObjectBall2;
+        //public ObjectBall _stripedObjectBall3;
+        //public ObjectBall _stripedObjectBall4;
+        //public ObjectBall _stripedObjectBall5;
+        //public ObjectBall _stripedObjectBall6;
+        //public ObjectBall _stripedObjectBall7;
+        //public Texture2D stripedObjectBallTexture; // [placeholder texture], should be ~1/20 the height of the table, currently 40x40 pixels
 
-        public Match1()
+        //public static List<PoolBall> poolBalls; // List (not array) so that PoolBalls can be removed
+
+
+        //// pockets:
+        //public Pocket _pocketTopLeft;
+        //public Pocket _pocketTopMiddle;
+        //public Pocket _pocketTopRight;
+        //public Pocket _pocketBottomLeft;
+        //public Pocket _pocketBottomMiddle;
+        //public Pocket _pocketBottomRight;
+        //public Texture2D pocketTexture;
+        //public static Pocket[] pockets; // Array (not list) because Pockets don't need to be removed
+
+        //public Match1()
+        //{
+        //    _graphics = new GraphicsDeviceManager(this);
+        //    Content.RootDirectory = "Content";
+        //    IsMouseVisible = true;
+
+        //    _graphics.PreferredBackBufferWidth = MainMenu.windowWidth; // default window width
+        //    _graphics.PreferredBackBufferHeight = MainMenu.windowHeight; // default window height
+        //    _graphics.ApplyChanges();
+        //}
+
+        public static void DoAllPoolBallPoolBallCollisions() // in Match1.cs rather than PoolBall.cs so that all velocities can be changed on the same frame
         {
-            _graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
-            IsMouseVisible = true;
-
-            _graphics.PreferredBackBufferWidth = MainMenu.windowWidth; // default window width
-            _graphics.PreferredBackBufferHeight = MainMenu.windowHeight; // default window height
-            _graphics.ApplyChanges();
-        }
-
-        public void DoAllPoolBallPoolBallCollisions() // in Match1.cs rather than PoolBall.cs so that all velocities can be changed on the same frame
-        {
-            for (int i = 0; i < poolBalls.Length - 1; i++)
+            for (int i = 0; i < MainMenu.poolBalls.Count - 1; i++)
             {
-                for (int j = i + 1; j < poolBalls.Length; j++)
+                for (int j = i + 1; j < MainMenu.poolBalls.Count; j++)
                 {
-                    if (poolBalls[i] == poolBalls[j]) // no need to check if it collides with itself
+                    if (MainMenu.poolBalls[i] == MainMenu.poolBalls[j]) // no need to check if it collides with itself
                     { continue; }
                     else
                     {
-                        if (Vector2.Distance(poolBalls[i].position, poolBalls[j].position) <= poolBalls[i].radius * 2)
+                        if (Vector2.Distance(MainMenu.poolBalls[i].position, MainMenu.poolBalls[j].position) <= MainMenu.poolBallRadius * 2)
                         {
-                            Vector2 relativePositionVector = poolBalls[i].position - poolBalls[j].position; // the vector that is normal to the collision surface (aka other ball), pointing towards poolBalls[i]
+                            Vector2 relativePositionVector = MainMenu.poolBalls[i].position - MainMenu.poolBalls[j].position; // the vector that is normal to the collision surface (aka other ball), pointing towards poolBalls[i]
                             Vector2 unitNormalVector = relativePositionVector / relativePositionVector.Length(); // normalised to have a magnitude of 1
 
-                            Vector2 newVelocity = poolBalls[i].velocity + (Vector2.Dot(poolBalls[j].velocity - poolBalls[i].velocity, unitNormalVector) * unitNormalVector);
-                            Vector2 newOtherVelocity = poolBalls[j].velocity + (Vector2.Dot(poolBalls[i].velocity - poolBalls[j].velocity, unitNormalVector) * unitNormalVector);
+                            Vector2 newVelocity = MainMenu.poolBalls[i].velocity + (Vector2.Dot(MainMenu.poolBalls[j].velocity - MainMenu.poolBalls[i].velocity, unitNormalVector) * unitNormalVector);
+                            Vector2 newOtherVelocity = MainMenu.poolBalls[j].velocity + (Vector2.Dot(MainMenu.poolBalls[i].velocity - MainMenu.poolBalls[j].velocity, unitNormalVector) * unitNormalVector);
 
-                            poolBalls[j].velocity = newOtherVelocity;
-                            poolBalls[i].velocity = newVelocity;
+                            MainMenu.poolBalls[j].velocity = newOtherVelocity;
+                            MainMenu.poolBalls[i].velocity = newVelocity;
                         }
-
-                        //// if they are stuck in each other:
-                        //else if (Vector2.Distance(poolBalls[i].position, poolBalls[j].position) < poolBalls[i].radius * 2)
-                        //{
-                        //    Vector2 relativePositionVector = poolBalls[i].position - poolBalls[j].position; // the vector that is normal to the collision surface (aka other ball), pointing towards poolBalls[i]
-                        //    Vector2 adjustedRelativePositionVector = ((2 * poolBalls[i].radius) - relativePositionVector.Length()) * (relativePositionVector / relativePositionVector.Length());
-
-                        //    poolBalls[j].position -= adjustedRelativePositionVector;
-                        //    poolBalls[i].position += adjustedRelativePositionVector;
-                        //}
                     }
                 }
             }
         }
 
-        public static bool IsAllStationary()
+        public static bool IsAllStationary() // to prevent CueBall from being shot again when things are moving
         {
-            foreach (PoolBall poolBall in poolBalls)
+            foreach (PoolBall poolBall in MainMenu.poolBalls)
             {
                 if (poolBall.velocity != Vector2.Zero)
                 {
@@ -113,144 +114,148 @@ namespace PoolGame.Classes.Screens
             return true;
         }
 
-        protected override void Initialize()
-        {
-            previousKeyboardState = Keyboard.GetState(); // getting the starting state of the keyboard so that hotkeys can be used
+        //protected override void Initialize()
+        //{
+        //    previousKeyboardState = Keyboard.GetState(); // getting the starting state of the keyboard so that hotkeys can be used
 
-            // sizing:
-            poolBallRadius = 20;
-            pocketRadius = 72;
-            tablePocketSpacing = 16;
+        //    // sizing:
+        //    poolBallRadius = 20;
+        //    pocketRadius = 36;
+        //    tablePocketSpacing = 16;
 
 
-            // objects:
+        //    // objects:
 
-            cueBallTexture = Content.Load<Texture2D>("CueBall_transparent_40x40");
-            _cueBall = new CueBall(cueBallTexture, poolBallRadius);
+        //    // PoolBalls:
 
-            eightBallTexture = cueBallTexture;
-            _eightBall = new ObjectBall(cueBallTexture, poolBallRadius);
+        //    cueBallTexture = Content.Load<Texture2D>("CueBall_transparent_40x40");
+        //    _cueBall = new CueBall(cueBallTexture, poolBallRadius);
 
-            float sqrt3 = (float)Math.Sqrt(3);
-            const int spacing = 3; // to avoid frame-1 collisions
+        //    eightBallTexture = cueBallTexture;
+        //    _eightBall = new ObjectBall(cueBallTexture, poolBallRadius);
 
-            solidObjectBallTexture = Content.Load<Texture2D>("ObjectBall_solid_transparent_40x40");
-            stripedObjectBallTexture = Content.Load<Texture2D>("ObjectBall_striped_transparent_40x40");
+        //    float sqrt3 = (float)Math.Sqrt(3); // to not need to repeatedly use Math.Sqrt(3)
+        //    const int spacing = 3; // to avoid frame-1 collisions
 
-            // (derivation for exact positions in writeup):
+        //    solidObjectBallTexture = Content.Load<Texture2D>("ObjectBall_solid_transparent_40x40");
+        //    stripedObjectBallTexture = Content.Load<Texture2D>("ObjectBall_striped_transparent_40x40");
 
-            // first column:
-            _solidObjectBall1 = new ObjectBall(solidObjectBallTexture, new Vector2(_eightBall.position.X - (2 * poolBallRadius * sqrt3) - (2 * spacing), _eightBall.position.Y), poolBallRadius, false);
+        //    // (derivation for exact positions in writeup):
 
-            // second column:
-            _solidObjectBall2 = new ObjectBall(solidObjectBallTexture, new Vector2(_eightBall.position.X - (poolBallRadius * sqrt3) - spacing, _eightBall.position.Y + poolBallRadius + spacing), poolBallRadius, false);
-            _stripedObjectBall1 = new ObjectBall(stripedObjectBallTexture, new Vector2(_eightBall.position.X - (poolBallRadius * sqrt3) - spacing, _eightBall.position.Y - poolBallRadius - spacing), poolBallRadius, false);
+        //    // first column:
+        //    _solidObjectBall1 = new ObjectBall(solidObjectBallTexture, new Vector2(_eightBall.position.X - (2 * poolBallRadius * sqrt3) - (2 * spacing), _eightBall.position.Y), poolBallRadius, false);
+
+        //    // second column:
+        //    _solidObjectBall2 = new ObjectBall(solidObjectBallTexture, new Vector2(_eightBall.position.X - (poolBallRadius * sqrt3) - spacing, _eightBall.position.Y + poolBallRadius + spacing), poolBallRadius, false);
+        //    _stripedObjectBall1 = new ObjectBall(stripedObjectBallTexture, new Vector2(_eightBall.position.X - (poolBallRadius * sqrt3) - spacing, _eightBall.position.Y - poolBallRadius - spacing), poolBallRadius, false);
             
-            // third column:
-            _stripedObjectBall2 = new ObjectBall(stripedObjectBallTexture, new Vector2(_eightBall.position.X, _eightBall.position.Y + (2 * poolBallRadius) + spacing), poolBallRadius, false);
-            // (eight ball goes here)
-            _solidObjectBall3 = new ObjectBall(solidObjectBallTexture, new Vector2(_eightBall.position.X, _eightBall.position.Y - (2 * poolBallRadius) - spacing), poolBallRadius, false);
+        //    // third column:
+        //    _stripedObjectBall2 = new ObjectBall(stripedObjectBallTexture, new Vector2(_eightBall.position.X, _eightBall.position.Y + (2 * poolBallRadius) + spacing), poolBallRadius, false);
+        //    // (eight ball goes here)
+        //    _solidObjectBall3 = new ObjectBall(solidObjectBallTexture, new Vector2(_eightBall.position.X, _eightBall.position.Y - (2 * poolBallRadius) - spacing), poolBallRadius, false);
 
-            // fourth column:
-            _solidObjectBall4 = new ObjectBall(solidObjectBallTexture, new Vector2(_eightBall.position.X + (poolBallRadius * sqrt3) + spacing, _eightBall.position.Y + (3 * poolBallRadius) + (2 * spacing)), poolBallRadius, false);
-            _stripedObjectBall3 = new ObjectBall(stripedObjectBallTexture, new Vector2(_eightBall.position.X + (poolBallRadius * sqrt3) + spacing, _eightBall.position.Y + poolBallRadius + spacing), poolBallRadius, false);
-            _solidObjectBall5 = new ObjectBall(solidObjectBallTexture, new Vector2(_eightBall.position.X + (poolBallRadius * sqrt3) + spacing, _eightBall.position.Y - poolBallRadius - spacing), poolBallRadius, false);
-            _stripedObjectBall4 = new ObjectBall(stripedObjectBallTexture, new Vector2(_eightBall.position.X + (poolBallRadius * sqrt3) + spacing, _eightBall.position.Y - (3 * poolBallRadius) - (2 * spacing)), poolBallRadius, false);
+        //    // fourth column:
+        //    _solidObjectBall4 = new ObjectBall(solidObjectBallTexture, new Vector2(_eightBall.position.X + (poolBallRadius * sqrt3) + spacing, _eightBall.position.Y + (3 * poolBallRadius) + (2 * spacing)), poolBallRadius, false);
+        //    _stripedObjectBall3 = new ObjectBall(stripedObjectBallTexture, new Vector2(_eightBall.position.X + (poolBallRadius * sqrt3) + spacing, _eightBall.position.Y + poolBallRadius + spacing), poolBallRadius, false);
+        //    _solidObjectBall5 = new ObjectBall(solidObjectBallTexture, new Vector2(_eightBall.position.X + (poolBallRadius * sqrt3) + spacing, _eightBall.position.Y - poolBallRadius - spacing), poolBallRadius, false);
+        //    _stripedObjectBall4 = new ObjectBall(stripedObjectBallTexture, new Vector2(_eightBall.position.X + (poolBallRadius * sqrt3) + spacing, _eightBall.position.Y - (3 * poolBallRadius) - (2 * spacing)), poolBallRadius, false);
 
-            // fith column:
-            _stripedObjectBall5 = new ObjectBall(stripedObjectBallTexture, new Vector2(_eightBall.position.X + (2 * poolBallRadius * sqrt3) + (2 * spacing), _eightBall.position.Y + (4 * poolBallRadius) + (2 * spacing)), poolBallRadius, false);
-            _solidObjectBall6 = new ObjectBall(solidObjectBallTexture, new Vector2(_eightBall.position.X + (2 * poolBallRadius * sqrt3) + (2 * spacing), _eightBall.position.Y + (2 * poolBallRadius) + spacing), poolBallRadius, false);
-            _stripedObjectBall6 = new ObjectBall(stripedObjectBallTexture, new Vector2(_eightBall.position.X + (2 * poolBallRadius * sqrt3) + (2 * spacing), _eightBall.position.Y), poolBallRadius, false);
-            _stripedObjectBall7 = new ObjectBall(stripedObjectBallTexture, new Vector2(_eightBall.position.X + (2 * poolBallRadius * sqrt3) + (2 * spacing), _eightBall.position.Y - (2 * poolBallRadius) - spacing), poolBallRadius, false);
-            _solidObjectBall7 = new ObjectBall(solidObjectBallTexture, new Vector2(_eightBall.position.X + (2 * poolBallRadius * sqrt3) + (2 * spacing), _eightBall.position.Y - (4 * poolBallRadius) - (2 * spacing)), poolBallRadius, false);
+        //    // fith column:
+        //    _stripedObjectBall5 = new ObjectBall(stripedObjectBallTexture, new Vector2(_eightBall.position.X + (2 * poolBallRadius * sqrt3) + (2 * spacing), _eightBall.position.Y + (4 * poolBallRadius) + (2 * spacing)), poolBallRadius, false);
+        //    _solidObjectBall6 = new ObjectBall(solidObjectBallTexture, new Vector2(_eightBall.position.X + (2 * poolBallRadius * sqrt3) + (2 * spacing), _eightBall.position.Y + (2 * poolBallRadius) + spacing), poolBallRadius, false);
+        //    _stripedObjectBall6 = new ObjectBall(stripedObjectBallTexture, new Vector2(_eightBall.position.X + (2 * poolBallRadius * sqrt3) + (2 * spacing), _eightBall.position.Y), poolBallRadius, false);
+        //    _stripedObjectBall7 = new ObjectBall(stripedObjectBallTexture, new Vector2(_eightBall.position.X + (2 * poolBallRadius * sqrt3) + (2 * spacing), _eightBall.position.Y - (2 * poolBallRadius) - spacing), poolBallRadius, false);
+        //    _solidObjectBall7 = new ObjectBall(solidObjectBallTexture, new Vector2(_eightBall.position.X + (2 * poolBallRadius * sqrt3) + (2 * spacing), _eightBall.position.Y - (4 * poolBallRadius) - (2 * spacing)), poolBallRadius, false);
 
-            poolBalls = new PoolBall[] { _cueBall, _eightBall, 
-                                         _solidObjectBall1, _solidObjectBall2, _solidObjectBall3, _solidObjectBall4, _solidObjectBall5, _solidObjectBall6, _solidObjectBall7,
-                                         _stripedObjectBall1, _stripedObjectBall2, _stripedObjectBall3, _stripedObjectBall4, _stripedObjectBall5, _stripedObjectBall6, _stripedObjectBall7};
-
-            base.Initialize();
-        }
-
-        protected override void LoadContent()
-        {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-        }
-
-        protected override void Update(GameTime gameTime)
-        {
-            // exit with 'Esc':
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Enter))
-            {
-                Exit();
-            }
-
-            // toggle fullscreen with 'F':
-            if (Keyboard.GetState().IsKeyDown(Keys.F))
-            {
-                if (!previousKeyboardState.IsKeyDown(Keys.F))
-                {
-                    _graphics.IsFullScreen = !_graphics.IsFullScreen;
-                    _graphics.ApplyChanges();
-                }
-            }
-            previousKeyboardState = Keyboard.GetState(); // re-assign for the next Update()
+        //    poolBalls = new List<PoolBall> { _cueBall, _eightBall, 
+        //                                 _solidObjectBall1, _solidObjectBall2, _solidObjectBall3, _solidObjectBall4, _solidObjectBall5, _solidObjectBall6, _solidObjectBall7,
+        //                                 _stripedObjectBall1, _stripedObjectBall2, _stripedObjectBall3, _stripedObjectBall4, _stripedObjectBall5, _stripedObjectBall6, _stripedObjectBall7};
 
 
-            // updating objects:
+        //    // Pockets:
 
-            DoAllPoolBallPoolBallCollisions();
+        //    //pocketRadius
+        //    //tablePocketSpacing
 
-            _cueBall.Update(gameTime);
-            _eightBall.Update(gameTime);
+        //    pocketTexture = Content.Load<Texture2D>("CueBall_transparent_72x72"); // [placeholder]
+        //    _pocketTopLeft = new Pocket(pocketTexture, new Vector2(pocketRadius + tablePocketSpacing, pocketRadius + tablePocketSpacing), pocketRadius);
+        //    _pocketTopMiddle = new Pocket(pocketTexture, new Vector2(MainMenu.windowWidth / 2, pocketRadius + tablePocketSpacing), pocketRadius);
+        //    _pocketTopRight = new Pocket(pocketTexture, new Vector2(MainMenu.windowWidth - pocketRadius - tablePocketSpacing, pocketRadius + tablePocketSpacing), pocketRadius);
+        //    _pocketBottomLeft = new Pocket(pocketTexture, new Vector2(pocketRadius + tablePocketSpacing, MainMenu.windowHeight - pocketRadius - tablePocketSpacing), pocketRadius);
+        //    _pocketBottomMiddle = new Pocket(pocketTexture, new Vector2(MainMenu.windowWidth / 2, MainMenu.windowHeight - pocketRadius - tablePocketSpacing), pocketRadius);
+        //    _pocketBottomRight = new Pocket(pocketTexture, new Vector2(MainMenu.windowWidth - pocketRadius - tablePocketSpacing, MainMenu.windowHeight - pocketRadius - tablePocketSpacing), pocketRadius);
 
-            _solidObjectBall1.Update(gameTime);
-            _solidObjectBall2.Update(gameTime);
-            _solidObjectBall3.Update(gameTime);
-            _solidObjectBall4.Update(gameTime);
-            _solidObjectBall5.Update(gameTime);
-            _solidObjectBall6.Update(gameTime);
-            _solidObjectBall7.Update(gameTime);
+        //    pockets = new Pocket[6] { _pocketTopLeft,    _pocketTopMiddle,    _pocketTopRight,
+        //                              _pocketBottomLeft, _pocketBottomMiddle, _pocketBottomRight };
 
-            _stripedObjectBall1.Update(gameTime);
-            _stripedObjectBall2.Update(gameTime);
-            _stripedObjectBall3.Update(gameTime);
-            _stripedObjectBall4.Update(gameTime);
-            _stripedObjectBall5.Update(gameTime);
-            _stripedObjectBall6.Update(gameTime);
-            _stripedObjectBall7.Update(gameTime);
-        }
+        //    base.Initialize();
+        //}
 
-        protected override void Draw(GameTime gameTime)
-        {
-            GraphicsDevice.Clear(new Color(15,58,43)); // background colour, pool-table green
+        //protected override void LoadContent()
+        //{
+        //    _spriteBatch = new SpriteBatch(GraphicsDevice);
+        //}
 
-            // main sprite batch:
+        //protected override void Update(GameTime gameTime)
+        //{
+        //    // exit with 'Esc':
+        //    if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Enter))
+        //    {
+        //        Exit();
+        //    }
 
-            _spriteBatch.Begin();
+        //    // toggle fullscreen with 'F':
+        //    if (Keyboard.GetState().IsKeyDown(Keys.F))
+        //    {
+        //        if (!previousKeyboardState.IsKeyDown(Keys.F))
+        //        {
+        //            _graphics.IsFullScreen = !_graphics.IsFullScreen;
+        //            _graphics.ApplyChanges();
+        //        }
+        //    }
+        //    previousKeyboardState = Keyboard.GetState(); // re-assign for the next Update()
 
-            _cueBall.Draw(_spriteBatch);
 
-            _eightBall.Draw(_spriteBatch);
+        //    // updating objects:
 
-            _solidObjectBall1.Draw(_spriteBatch);
-            _solidObjectBall2.Draw(_spriteBatch);
-            _solidObjectBall3.Draw(_spriteBatch);
-            _solidObjectBall4.Draw(_spriteBatch);
-            _solidObjectBall5.Draw(_spriteBatch);
-            _solidObjectBall6.Draw(_spriteBatch);
-            _solidObjectBall7.Draw(_spriteBatch);
+        //    // Pocket-PoolBall collisions before PoolBall-PoolBall collisions because deleting is less intensive than calculating all collisions
+        //    // and, if a PoolBall is deleted, less collision work needs to be done
+        //    foreach (Pocket _pocket in pockets)
+        //    {
+        //        _pocket.Update(gameTime);
+        //    }
 
-            _stripedObjectBall1.Draw(_spriteBatch);
-            _stripedObjectBall2.Draw(_spriteBatch);
-            _stripedObjectBall3.Draw(_spriteBatch);
-            _stripedObjectBall4.Draw(_spriteBatch);
-            _stripedObjectBall5.Draw(_spriteBatch);
-            _stripedObjectBall6.Draw(_spriteBatch);
-            _stripedObjectBall7.Draw(_spriteBatch);
+        //    DoAllPoolBallPoolBallCollisions();
 
-            _spriteBatch.End();
+        //    // foreach means that PoolBalls removed from the array aren't updated:
+        //    foreach (PoolBall _poolBall in poolBalls)
+        //    {
+        //        _poolBall.Update(gameTime);
+        //    }
+        //}
 
-            base.Draw(gameTime);
-        }
+        //protected override void Draw(GameTime gameTime)
+        //{
+        //    GraphicsDevice.Clear(new Color(15,58,43)); // background colour, pool-table green
+
+        //    // main sprite batch:
+
+        //    _spriteBatch.Begin();
+
+        //    foreach (Pocket _pocket in pockets)
+        //    {
+        //        _pocket.Draw(_spriteBatch);
+        //    }
+
+        //    // foreach means that PoolBalls removed from the array aren't drawn
+        //    foreach (PoolBall _poolBall in poolBalls)
+        //    {
+        //        _poolBall.Draw(_spriteBatch);
+        //    }
+
+        //    _spriteBatch.End();
+
+        //    base.Draw(gameTime);
+        //}
     }
 }

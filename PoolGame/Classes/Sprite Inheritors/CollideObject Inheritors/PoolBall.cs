@@ -12,7 +12,7 @@ using System.Text.RegularExpressions;
 
 namespace PoolGame.Classes
 {
-    internal class PoolBall : CollideObject
+    public class PoolBall : CollideObject
     {
         // all PoolBall objects have a mass of 1,
         // meaning that a PoolBall's velocity is always equal to its momentum
@@ -30,12 +30,14 @@ namespace PoolGame.Classes
         {
             acceleration = Vector2.Zero;
             position = initialPosition;
+            radius = MainMenu.poolBallRadius;
         }
 
         public PoolBall(Texture2D texture, float radius) : base(texture, radius) // allowing CueBall to have a constructor that doesn't need initialPosition
         {
             acceleration = Vector2.Zero;
             position = Vector2.Zero;
+            radius = MainMenu.poolBallRadius;
         }
 
         public void DoFriction()
@@ -132,8 +134,6 @@ namespace PoolGame.Classes
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            MouseState currentMouseState = Mouse.GetState();
 
             DoBoundsCollision();
 

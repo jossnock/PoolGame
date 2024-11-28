@@ -12,7 +12,7 @@ using PoolGame.Classes.Screens;
 
 namespace PoolGame.Classes
 {
-    internal class CueBall : PoolBall
+    public class CueBall : PoolBall
     {
         private MouseState previousMouseState;
 
@@ -28,14 +28,11 @@ namespace PoolGame.Classes
             Vector2 movementVector = mousePosition - position;
 
             velocity += movementVector * VelocityMultiplier;
-
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            // DoAllPoolBallPoolBallCollisions();
 
             MouseState currentMouseState = Mouse.GetState();
 

@@ -11,7 +11,7 @@ using PoolGame.Classes.Screens;
 
 namespace PoolGame.Classes
 {
-    internal class ObjectBall : PoolBall
+    public class ObjectBall : PoolBall
     {
         // TODO: replace bools with an enum
         private bool isStriped; // if false, then the ObjectBall is solid
@@ -27,7 +27,7 @@ namespace PoolGame.Classes
         public ObjectBall(Texture2D texture, float radius) : base(texture, radius)
         {
             isEight = true;
-            position = new Vector2((4f / 5) * ((MainMenu.windowWidth - (4 * Match1.pocketRadius) - (2 * Match1.tablePocketSpacing))), MainMenu.windowHeight / 2); 
+            position = new Vector2((4f / 5) * ((MainMenu.windowWidth - (4 * MainMenu.pocketRadius) - (2 * MainMenu.tablePocketSpacing))), MainMenu.windowHeight / 2);
             // positioned 1/5th the width of the playing surface, (derivation in writeup)
         }
     }
