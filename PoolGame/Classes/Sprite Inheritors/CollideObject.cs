@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PoolGame.Classes
 {
-    internal class CollideObject : Sprite
+    public class CollideObject : Sprite
     {
         public float radius { get; set; }
         public Rectangle boundingBox { get; set; }
@@ -20,29 +20,29 @@ namespace PoolGame.Classes
         public ObjectType Type { get; set; }
 
         // constructor for rectangles:
-        public CollideObject(Texture2D texture, Vector2 initialPosition, Rectangle boundingBox)
+        public CollideObject(Texture2D _texture, Vector2 _initialPosition, Rectangle _boundingBox)
         {
-            this.texture = texture;
-            this.position = initialPosition;
-            this.boundingBox = boundingBox;
-            this.Type = ObjectType.Rectangle;
+            texture = _texture;
+            position = _initialPosition;
+            boundingBox = _boundingBox;
+            Type = ObjectType.Rectangle;
         }
 
         // constructor for circles:
-        public CollideObject(Texture2D texture, Vector2 position, float radius)
+        public CollideObject(Texture2D _texture, Vector2 _position, float _radius)
         {
-            this.texture = texture;
-            this.position = position;
-            this.radius = radius;
-            this.Type = ObjectType.Circle;
+            texture = _texture;
+            position = _position;
+            radius = _radius;
+            Type = ObjectType.Circle;
         }
 
-        public CollideObject(Texture2D texture, float radius) // allowing CueBall to have a constructor that doesn't need initialPosition
+        public CollideObject(Texture2D _texture, float _radius) // allowing CueBall to have a constructor that doesn't need initialPosition
         {
-            this.texture = texture;
-            this.position = Vector2.Zero;
-            this.radius = radius;
-            this.Type = ObjectType.Circle;
+            texture = _texture;
+            position = Vector2.Zero;
+            radius = _radius;
+            Type = ObjectType.Circle;
         }
 
         public override void Update(GameTime gameTime)
@@ -55,6 +55,7 @@ namespace PoolGame.Classes
             base.Update(gameTime);
         }
 
+        /*
 
         public void CheckAndDoCollision(CollideObject otherObject)
         {
@@ -92,7 +93,6 @@ namespace PoolGame.Classes
         }
 
 
-
         // methods for checking if CollideObject is colliding with another CollideObject:
 
         private bool IsCollidingRectangleRectangle(CollideObject rectangle1, CollideObject rectangle2)
@@ -128,6 +128,6 @@ namespace PoolGame.Classes
             return false;
         }
 
-
+        */
     }
 }

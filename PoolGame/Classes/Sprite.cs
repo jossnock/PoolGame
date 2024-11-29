@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace PoolGame.Classes
 {
-    internal abstract class Sprite // internal (can't directly create a Sprite object)
+    public abstract class Sprite // internal (can't directly create a Sprite object)
     {
         public Texture2D texture {  get; set; }
         public Vector2 position { get; set; } // a CollideObject position is at its centre unless otherwise specified
