@@ -17,7 +17,8 @@ namespace PoolGame
         enum ScreenState // screen states
         {
             MainMenu,
-            Match
+            Match,
+            Settings
         }
         ScreenState _screenState;
 
@@ -103,7 +104,7 @@ namespace PoolGame
             return true;
         }
 
-        public void DoAllPoolBallPoolBallCollisions() // in Match1.cs rather than PoolBall.cs so that all velocities can be changed on the same frame
+        public static void DoAllPoolBallPoolBallCollisions() // in Match1.cs rather than PoolBall.cs so that all velocities can be changed on the same frame
         {
             for (int i = 0; i < poolBalls.Count - 1; i++)
             {
@@ -127,59 +128,6 @@ namespace PoolGame
                     }
                 }
             }
-        }
-
-        public void MainMenuUpdate(GameTime gameTime)
-        {
-
-        }
-
-        public void MatchUpdate(GameTime gameTime)
-        {
-            // Pocket-PoolBall collisions before PoolBall-PoolBall collisions because deleting is less intensive than calculating all collisions
-            // and, if a PoolBall is deleted, less collision work needs to be done
-            foreach (Pocket _pocket in Game1.pockets)
-            {
-                _pocket.Update(gameTime);
-            }
-
-            DoAllPoolBallPoolBallCollisions();
-
-            // foreach means that PoolBalls removed from the array aren't updated:
-            foreach (PoolBall _poolBall in Game1.poolBalls)
-            {
-                _poolBall.Update(gameTime);
-            }
-        }
-
-        public void MainMenuDraw(GameTime gameTime)
-        {
-            GraphicsDevice.Clear(Color.Gray); // background colour
-            _desktop.Render(); // renders Myra UI elements
-        }
-
-        public void MatchDraw(GameTime gameTime)
-        {
-            GraphicsDevice.Clear(new Color(15, 58, 43)); // background colour, pool-table green
-
-            // main sprite batch:
-
-            _spriteBatch.Begin();
-
-            foreach (Pocket _pocket in Game1.pockets)
-            {
-                _pocket.Draw(_spriteBatch);
-            }
-
-            // foreach means that PoolBalls removed from the array aren't drawn
-            foreach (PoolBall _poolBall in Game1.poolBalls)
-            {
-                _poolBall.Draw(_spriteBatch);
-            }
-
-            _spriteBatch.End();
-
-            base.Draw(gameTime);
         }
 
         protected override void Initialize()
@@ -242,12 +190,6 @@ namespace PoolGame
             // Add it to the desktop
             _desktop = new Desktop();
             _desktop.Root = grid;
-
-
-
-
-
-
 
             // sizing:
             poolBallRadius = 20;
@@ -347,11 +289,17 @@ namespace PoolGame
             switch (_screenState)
             {
             case ScreenState.MainMenu:
-                MainMenuUpdate(gameTime);
+                MainMenu _mainMenu = new();
+                _mainMenu.Update(gameTime);
                 break;
 
             case ScreenState.Match:
-                MatchUpdate(gameTime);
+                Match _match = new();
+                _match.Update(gameTime);
+                break;
+            case ScreenState.Settings:
+                Match _setings = new();
+                _setings.Update(gameTime);
                 break;
             }
         }
@@ -363,11 +311,19 @@ namespace PoolGame
             switch (_screenState)
             {
                 case ScreenState.MainMenu:
-                    MainMenuDraw(gameTime);
+                    GraphicsDevice.Clear(Color.Gray); // background colour
+                    MainMenu _mainMenu = new();
+                    _mainMenu.Draw(gameTime);
                     break;
 
                 case ScreenState.Match:
-                    MatchDraw(gameTime);
+                    GraphicsDevice.Clear(new Color(21,88,67)); // background colour
+                    Match _match = new();
+                    _match.Draw(gameTime);
+                    break;
+                case ScreenState.Settings:
+                    Match _setings = new();
+                    _setings.Draw(gameTime);
                     break;
             }
         }
