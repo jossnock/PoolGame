@@ -7,8 +7,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using PoolGame;
-using PoolGame.Classes.Screens;
-using System.Text.RegularExpressions;
 
 namespace PoolGame.Classes
 {
@@ -30,14 +28,14 @@ namespace PoolGame.Classes
         {
             acceleration = Vector2.Zero;
             position = initialPosition;
-            radius = MainMenu.poolBallRadius;
+            radius = Game1.poolBallRadius;
         }
 
         public PoolBall(Texture2D texture, float radius) : base(texture, radius) // allowing CueBall to have a constructor that doesn't need initialPosition
         {
             acceleration = Vector2.Zero;
             position = Vector2.Zero;
-            radius = MainMenu.poolBallRadius;
+            radius = Game1.poolBallRadius;
         }
 
         public void DoFriction()
@@ -97,9 +95,9 @@ namespace PoolGame.Classes
             // |           |
             // |     O     |
             // -------------
-            if (position.Y + radius > MainMenu.windowHeight)
+            if (position.Y + radius > Game1.windowHeight)
             {
-                position = position = new Vector2(position.X, MainMenu.windowHeight - radius); // keeping in bounds if it clips out
+                position = position = new Vector2(position.X, Game1.windowHeight - radius); // keeping in bounds if it clips out
                 velocity = new Vector2(velocity.X, -velocity.Y); // reversing part of it to give the effect of an elastic collision
                 decelerationDueToFriction = new Vector2(decelerationDueToFriction.X, -decelerationDueToFriction.Y); // reversing part of it to prevent it from speeding up PoolBall
             }
@@ -123,9 +121,9 @@ namespace PoolGame.Classes
             // |         O |
             // |           |
             // -------------
-            if (position.X + radius > MainMenu.windowWidth)
+            if (position.X + radius > Game1.windowWidth)
             {
-                position = new Vector2(MainMenu.windowWidth - radius, position.Y); // keeping in bounds if it clips out
+                position = new Vector2(Game1.windowWidth - radius, position.Y); // keeping in bounds if it clips out
                 velocity = new Vector2(-velocity.X, velocity.Y); // reversing part of it to give the effect of an elastic collision
                 decelerationDueToFriction = new Vector2(-decelerationDueToFriction.X, decelerationDueToFriction.Y); // reversing part of it to prevent it from speeding up PoolBall
             }

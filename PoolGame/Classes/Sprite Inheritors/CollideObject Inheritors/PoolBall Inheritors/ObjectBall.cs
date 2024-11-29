@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PoolGame;
-using PoolGame.Classes.Screens;
 
 namespace PoolGame.Classes
 {
@@ -27,7 +26,7 @@ namespace PoolGame.Classes
         public ObjectBall(Texture2D texture, float radius) : base(texture, radius)
         {
             isEight = true;
-            position = new Vector2((4f / 5) * ((MainMenu.windowWidth - (4 * MainMenu.pocketRadius) - (2 * MainMenu.tablePocketSpacing))), MainMenu.windowHeight / 2);
+            position = new Vector2((4f / 5) * ((Game1.windowWidth - (4 * Game1.pocketRadius) - (2 * Game1.tablePocketSpacing))), Game1.windowHeight / 2);
             // positioned 1/5th the width of the playing surface, (derivation in writeup)
         }
     }

@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using PoolGame.Classes.Screens;
 
 namespace PoolGame.Classes
 {
@@ -22,12 +21,12 @@ namespace PoolGame.Classes
 
         public void DoCollisions()
         {
-            for (int i = 0; i < MainMenu.poolBalls.Count; i++)
+            for (int i = 0; i < Game1.poolBalls.Count; i++)
             {
-                if (Vector2.Distance(position, MainMenu.poolBalls[i].position) < MainMenu.pocketRadius) // not Match1.pocketRadius + Match1.poolBallRadius,
+                if (Vector2.Distance(position, Game1.poolBalls[i].position) < Game1.pocketRadius) // not Match1.pocketRadius + Match1.poolBallRadius,
                                                                                                     // otherwise it would delete PoolBalls before they would realistically fall in a Pocket
                 {
-                    MainMenu.poolBalls.RemoveAt(i);
+                    Game1.poolBalls.RemoveAt(i);
                 }
             }
         }

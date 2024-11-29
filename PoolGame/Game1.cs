@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using PoolGame.Classes;
-using PoolGame.Classes.Screens;
 using Myra;
 using Myra.Graphics2D.UI;
 using System.IO;
@@ -13,7 +12,7 @@ using System.Collections.Generic;
 
 namespace PoolGame
 {
-    public class MainMenu : Game
+    public class Game1 : Game
     {
         enum ScreenState // screen states
         {
@@ -26,18 +25,16 @@ namespace PoolGame
         public static SpriteBatch _spriteBatch;
         public static Desktop _desktop;
 
-        public static int windowWidth {  get;  set; }
-        public static int windowHeight {  get;  set; }
+        public static int windowWidth { get; set; }
+        public static int windowHeight { get; set; }
 
         private KeyboardState previousKeyboardState;
-
 
         // sizing:
         // using the approx. scale 1cm : 8px
         public static int poolBallRadius;
         public static int pocketRadius;
         public static int tablePocketSpacing;
-
 
         // pool balls:
 
@@ -78,7 +75,7 @@ namespace PoolGame
         public Texture2D pocketTexture;
         public static Pocket[] pockets; // Array (not list) because Pockets don't need to be removed
 
-        public MainMenu()
+        public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -94,15 +91,103 @@ namespace PoolGame
             Window.AllowUserResizing = true;
         }
 
+        public static bool IsAllStationary()
+        {
+            foreach (PoolBall poolBall in poolBalls)
+            {
+                if (poolBall.velocity != Vector2.Zero)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public void DoAllPoolBallPoolBallCollisions() // in Match1.cs rather than PoolBall.cs so that all velocities can be changed on the same frame
+        {
+            for (int i = 0; i < poolBalls.Count - 1; i++)
+            {
+                for (int j = i + 1; j < poolBalls.Count; j++)
+                {
+                    if (poolBalls[i] == poolBalls[j]) // no need to check if it collides with itself
+                    { continue; }
+                    else
+                    {
+                        if (Vector2.Distance(poolBalls[i].position, poolBalls[j].position) <= poolBalls[i].radius * 2)
+                        {
+                            Vector2 relativePositionVector = poolBalls[i].position - poolBalls[j].position; // the vector that is normal to the collision surface (aka other ball), pointing towards poolBalls[i]
+                            Vector2 unitNormalVector = relativePositionVector / relativePositionVector.Length(); // normalised to have a magnitude of 1
+
+                            Vector2 newVelocity = poolBalls[i].velocity + (Vector2.Dot(poolBalls[j].velocity - poolBalls[i].velocity, unitNormalVector) * unitNormalVector);
+                            Vector2 newOtherVelocity = poolBalls[j].velocity + (Vector2.Dot(poolBalls[i].velocity - poolBalls[j].velocity, unitNormalVector) * unitNormalVector);
+
+                            poolBalls[j].velocity = newOtherVelocity;
+                            poolBalls[i].velocity = newVelocity;
+                        }
+                    }
+                }
+            }
+        }
+
+        public void MainMenuUpdate(GameTime gameTime)
+        {
+
+        }
+
+        public void MatchUpdate(GameTime gameTime)
+        {
+            // Pocket-PoolBall collisions before PoolBall-PoolBall collisions because deleting is less intensive than calculating all collisions
+            // and, if a PoolBall is deleted, less collision work needs to be done
+            foreach (Pocket _pocket in Game1.pockets)
+            {
+                _pocket.Update(gameTime);
+            }
+
+            DoAllPoolBallPoolBallCollisions();
+
+            // foreach means that PoolBalls removed from the array aren't updated:
+            foreach (PoolBall _poolBall in Game1.poolBalls)
+            {
+                _poolBall.Update(gameTime);
+            }
+        }
+
+        public void MainMenuDraw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.Gray); // background colour
+            _desktop.Render(); // renders Myra UI elements
+        }
+
+        public void MatchDraw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(new Color(15, 58, 43)); // background colour, pool-table green
+
+            // main sprite batch:
+
+            _spriteBatch.Begin();
+
+            foreach (Pocket _pocket in Game1.pockets)
+            {
+                _pocket.Draw(_spriteBatch);
+            }
+
+            // foreach means that PoolBalls removed from the array aren't drawn
+            foreach (PoolBall _poolBall in Game1.poolBalls)
+            {
+                _poolBall.Draw(_spriteBatch);
+            }
+
+            _spriteBatch.End();
+
+            base.Draw(gameTime);
+        }
+
         protected override void Initialize()
         {
             previousKeyboardState = Keyboard.GetState(); // getting the starting state of the keyboard, so that fullscreen can be used
             _screenState = ScreenState.MainMenu;
 
             base.Initialize();
-
-            // Match screen:
-
         }
 
         protected override void LoadContent()
@@ -157,6 +242,11 @@ namespace PoolGame
             // Add it to the desktop
             _desktop = new Desktop();
             _desktop.Root = grid;
+
+
+
+
+
 
 
             // sizing:
@@ -220,23 +310,23 @@ namespace PoolGame
 
             pocketTexture = Content.Load<Texture2D>("CueBall_transparent_72x72"); // [placeholder]
             _pocketTopLeft = new Pocket(pocketTexture, new Vector2(pocketRadius + tablePocketSpacing, pocketRadius + tablePocketSpacing), pocketRadius);
-            _pocketTopMiddle = new Pocket(pocketTexture, new Vector2(MainMenu.windowWidth / 2, pocketRadius + tablePocketSpacing), pocketRadius);
-            _pocketTopRight = new Pocket(pocketTexture, new Vector2(MainMenu.windowWidth - pocketRadius - tablePocketSpacing, pocketRadius + tablePocketSpacing), pocketRadius);
-            _pocketBottomLeft = new Pocket(pocketTexture, new Vector2(pocketRadius + tablePocketSpacing, MainMenu.windowHeight - pocketRadius - tablePocketSpacing), pocketRadius);
-            _pocketBottomMiddle = new Pocket(pocketTexture, new Vector2(MainMenu.windowWidth / 2, MainMenu.windowHeight - pocketRadius - tablePocketSpacing), pocketRadius);
-            _pocketBottomRight = new Pocket(pocketTexture, new Vector2(MainMenu.windowWidth - pocketRadius - tablePocketSpacing, MainMenu.windowHeight - pocketRadius - tablePocketSpacing), pocketRadius);
+            _pocketTopMiddle = new Pocket(pocketTexture, new Vector2(Game1.windowWidth / 2, pocketRadius + tablePocketSpacing), pocketRadius);
+            _pocketTopRight = new Pocket(pocketTexture, new Vector2(Game1.windowWidth - pocketRadius - tablePocketSpacing, pocketRadius + tablePocketSpacing), pocketRadius);
+            _pocketBottomLeft = new Pocket(pocketTexture, new Vector2(pocketRadius + tablePocketSpacing, Game1.windowHeight - pocketRadius - tablePocketSpacing), pocketRadius);
+            _pocketBottomMiddle = new Pocket(pocketTexture, new Vector2(Game1.windowWidth / 2, Game1.windowHeight - pocketRadius - tablePocketSpacing), pocketRadius);
+            _pocketBottomRight = new Pocket(pocketTexture, new Vector2(Game1.windowWidth - pocketRadius - tablePocketSpacing, Game1.windowHeight - pocketRadius - tablePocketSpacing), pocketRadius);
 
             pockets = new Pocket[6] { _pocketTopLeft,    _pocketTopMiddle,    _pocketTopRight,
                                       _pocketBottomLeft, _pocketBottomMiddle, _pocketBottomRight };
 
-            base.Initialize();
+            base.LoadContent();
         }
 
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            // exit with 'Back' or 'Escape'
+            // exit with 'Back' or 'Escape':
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 Exit();
@@ -257,45 +347,12 @@ namespace PoolGame
             switch (_screenState)
             {
             case ScreenState.MainMenu:
+                MainMenuUpdate(gameTime);
                 break;
 
             case ScreenState.Match:
-
-                    // exit with 'Esc':
-                    if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Enter))
-                    {
-                        Exit();
-                    }
-
-                    // toggle fullscreen with 'F':
-                    if (Keyboard.GetState().IsKeyDown(Keys.F))
-                    {
-                        if (!previousKeyboardState.IsKeyDown(Keys.F))
-                        {
-                            _graphics.IsFullScreen = !_graphics.IsFullScreen;
-                            _graphics.ApplyChanges();
-                        }
-                    }
-                    previousKeyboardState = Keyboard.GetState(); // re-assign for the next Update()
-
-
-                    // updating objects:
-
-                    // Pocket-PoolBall collisions before PoolBall-PoolBall collisions because deleting is less intensive than calculating all collisions
-                    // and, if a PoolBall is deleted, less collision work needs to be done
-                    foreach (Pocket _pocket in MainMenu.pockets)
-                    {
-                        _pocket.Update(gameTime);
-                    }
-
-                    Match1.DoAllPoolBallPoolBallCollisions();
-
-                    // foreach means that PoolBalls removed from the array aren't updated:
-                    foreach (PoolBall _poolBall in MainMenu.poolBalls)
-                    {
-                        _poolBall.Update(gameTime);
-                    }
-                    break;
+                MatchUpdate(gameTime);
+                break;
             }
         }
 
@@ -306,31 +363,11 @@ namespace PoolGame
             switch (_screenState)
             {
                 case ScreenState.MainMenu:
-                    GraphicsDevice.Clear(Color.Gray); // background colour
-                    _desktop.Render(); // renders Myra UI elements
+                    MainMenuDraw(gameTime);
                     break;
 
                 case ScreenState.Match:
-                    GraphicsDevice.Clear(new Color(15, 58, 43)); // background colour, pool-table green
-
-                    // main sprite batch:
-
-                    _spriteBatch.Begin();
-
-                    foreach (Pocket _pocket in MainMenu.pockets)
-                    {
-                        _pocket.Draw(_spriteBatch);
-                    }
-
-                    // foreach means that PoolBalls removed from the array aren't drawn
-                    foreach (PoolBall _poolBall in MainMenu.poolBalls)
-                    {
-                        _poolBall.Draw(_spriteBatch);
-                    }
-
-                    _spriteBatch.End();
-
-                    base.Draw(gameTime);
+                    MatchDraw(gameTime);
                     break;
             }
         }

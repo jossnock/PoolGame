@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PoolGame;
-using PoolGame.Classes.Screens;
 
 namespace PoolGame.Classes
 {
@@ -19,7 +18,7 @@ namespace PoolGame.Classes
         public CueBall(Texture2D texture, float radius) : base(texture, radius)
         {
             acceleration = Vector2.Zero;
-            position = new Vector2(MainMenu.windowWidth / 5, MainMenu.windowHeight / 2);
+            position = new Vector2(Game1.windowWidth / 5, Game1.windowHeight / 2);
         }
 
         public void Shoot()
@@ -36,7 +35,7 @@ namespace PoolGame.Classes
 
             MouseState currentMouseState = Mouse.GetState();
 
-            if ((currentMouseState.LeftButton == ButtonState.Pressed) & (Match1.IsAllStationary() == true)) // only allowed to input movement when stationary
+            if ((currentMouseState.LeftButton == ButtonState.Pressed) & (Game1.IsAllStationary() == true)) // only allowed to input movement when stationary
             {
                 Shoot();
             }
