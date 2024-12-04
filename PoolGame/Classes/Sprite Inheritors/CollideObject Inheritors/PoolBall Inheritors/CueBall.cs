@@ -18,7 +18,8 @@ namespace PoolGame.Classes
         public CueBall(Texture2D texture, float radius) : base(texture, radius)
         {
             acceleration = Vector2.Zero;
-            position = new Vector2(Game1.windowWidth / 5, Game1.windowHeight / 2);
+            int cueBallCentreX = (Game1.windowWidth + (6 * Game1.pocketRadius) + (3 * Game1.tablePocketSpacing)) / 5; // 1/5th across the playing surface (not 1/5th across entire table)
+            position = new Vector2(cueBallCentreX, Game1.windowHeight / 2);
         }
 
         public void Shoot()

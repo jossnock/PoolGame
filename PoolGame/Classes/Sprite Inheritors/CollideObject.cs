@@ -47,87 +47,12 @@ namespace PoolGame.Classes
 
         public override void Update(GameTime gameTime)
         {
-            if (this.Type == ObjectType.Rectangle)
+            if (Type == ObjectType.Rectangle)
             {
-                this.boundingBox = new Rectangle((int)this.position.X, (int)this.position.Y, this.boundingBox.Width, this.boundingBox.Height);
+                boundingBox = new Rectangle((int)position.X, (int)position.Y, boundingBox.Width, boundingBox.Height);
             }
 
             base.Update(gameTime);
         }
-
-        /*
-
-        public void CheckAndDoCollision(CollideObject otherObject)
-        {
-            if (this.Type == ObjectType.Rectangle & otherObject.Type == ObjectType.Rectangle)
-            {
-                if (IsCollidingRectangleRectangle(this, otherObject))
-                {
-
-                }
-            }
-
-            else if (this.Type == ObjectType.Rectangle & otherObject.Type == ObjectType.Circle)
-            {
-                if (IsCollidingRectangleCircle(this, otherObject))
-                {
-
-                }
-            }
-
-            else if (this.Type == ObjectType.Circle & otherObject.Type == ObjectType.Rectangle)
-            {
-                if (IsCollidingRectangleCircle(otherObject, this))
-                {
-
-                }
-            }
-
-            else if (this.Type == ObjectType.Circle & otherObject.Type == ObjectType.Circle)
-            {
-                if (IsCollidingCircleCircle(this, otherObject))
-                {
-
-                }
-            }
-        }
-
-
-        // methods for checking if CollideObject is colliding with another CollideObject:
-
-        private bool IsCollidingRectangleRectangle(CollideObject rectangle1, CollideObject rectangle2)
-        {
-            if (rectangle1.boundingBox.Intersects(rectangle2.boundingBox))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private bool IsCollidingRectangleCircle(CollideObject rectangle, CollideObject circle)
-        {
-            // finding closest point on rectangle to circle:
-            float closestX = MathHelper.Clamp(circle.position.X, rectangle.boundingBox.Left, rectangle.boundingBox.Right);
-            float closestY = MathHelper.Clamp(circle.position.Y, rectangle.boundingBox.Top, rectangle.boundingBox.Bottom);
-
-            // checking if it's within the circle's radius:
-            if (Vector2.Distance(new Vector2(closestX, closestY), circle.position) < circle.radius)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        private bool IsCollidingCircleCircle(CollideObject circle1, CollideObject circle2)
-        {
-            if (Vector2.Distance(circle1.position, circle2.position) < (circle1.radius + circle2.radius))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        */
     }
 }

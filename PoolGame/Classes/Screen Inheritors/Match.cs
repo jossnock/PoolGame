@@ -29,11 +29,23 @@ namespace PoolGame.Classes
             {
                 _poolBall.Update(gameTime);
             }
+
+            foreach (Cushion _cushion in Game1.cushions)
+            {
+                _cushion.Update(gameTime);
+            }
         }
 
         public override void Draw(GameTime gameTime)
         {
             Game1._spriteBatch.Begin();
+
+            Game1.baulkLine.Draw(Game1._spriteBatch);
+
+            foreach (Cushion _cushion in Game1.cushions)
+            {
+                _cushion.Draw(Game1._spriteBatch);
+            }
 
             foreach (Pocket _pocket in Game1.pockets)
             {
