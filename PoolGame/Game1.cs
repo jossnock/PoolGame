@@ -9,6 +9,8 @@ using System.IO;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Collections.Generic;
+using System.Data.Common;
+using Myra.Graphics2D;
 
 namespace PoolGame
 {
@@ -74,7 +76,32 @@ namespace PoolGame
         public Pocket _pocketBottomMiddle;
         public Pocket _pocketBottomRight;
         public Texture2D pocketTexture;
-        public static Pocket[] pockets; // Array (not list) because Pockets don't need to be removed
+        public static Pocket[] pockets;
+
+
+        // cushions:
+
+        public Cushion _cushionTopLeft;
+        public Cushion _cushionTopRight;
+        public Texture2D cushionTopTexture;
+
+        public Cushion _cushionMiddleLeft;
+        public Texture2D cushionMddleLeftTexture;
+
+        public Cushion _cushionMiddleRight;
+        public Texture2D cushionMddleRightTexture;
+
+        public Cushion _cushionBottomLeft;
+        public Cushion _cushionBottomRight;
+        public Texture2D cushionBottomTexture;
+
+        public static Cushion[] cushions;
+
+
+        // misc sprites:
+        public static Sprite baulkLine;
+        public Texture2D baulkLineTexture;
+
 
         public Game1()
         {
@@ -108,13 +135,13 @@ namespace PoolGame
         {
             for (int i = 0; i < poolBalls.Count - 1; i++)
             {
-                for (int j = i + 1; j < poolBalls.Count; j++)
+                for (int j = i + 1; j < poolBalls.Count; j++) // j = i + 1 prevents repeatedly checking the same pairs
                 {
                     if (poolBalls[i] == poolBalls[j]) // no need to check if it collides with itself
                     { continue; }
                     else
                     {
-                        if (Vector2.Distance(poolBalls[i].position, poolBalls[j].position) <= poolBalls[i].radius * 2)
+                        if (Vector2.Distance(poolBalls[i].position, poolBalls[j].position) <= poolBalls[i].radius * 2) // [todo: try using < rather than <=]
                         {
                             Vector2 relativePositionVector = poolBalls[i].position - poolBalls[j].position; // the vector that is normal to the collision surface (aka other ball), pointing towards poolBalls[i]
                             Vector2 unitNormalVector = relativePositionVector / relativePositionVector.Length(); // normalised to have a magnitude of 1
@@ -128,6 +155,196 @@ namespace PoolGame
                     }
                 }
             }
+        }
+
+        private Texture2D CreateBlockColouredCircleTexture(GraphicsDevice graphicsDevice, int radius, Color colour)
+        {
+            // relatively intensive method since it iterates through an array of a large size
+            // (e.g. size 1600 for a circle with a radius of  20px),
+            // but it's only called a few times and only during initialisation so it shouldn't notably impact performance
+
+            int diameter = radius * 2;
+            Texture2D circleTexture = new(graphicsDevice, diameter, diameter); // empty texture the size of the circle
+            Color[] pixelColours = new Color[diameter * diameter];
+
+            // iterating through array as if it were a coordinate grid to find points easier:
+            for (int xCoordinate = 0; xCoordinate < diameter; xCoordinate++)
+            {
+                for (int yCoordinate = 0; yCoordinate < diameter; yCoordinate++)
+                {
+                    // centre is at the point: (radius, radius)
+                    int distanceSquared = ((radius - xCoordinate) * (radius - xCoordinate)) + ((radius - yCoordinate) * (radius - yCoordinate)); // square root isn't necessary because it can be compared to radius^2
+
+                    if (distanceSquared <= radius * radius) // if inside the circle
+                    {
+                        pixelColours[xCoordinate + (yCoordinate * diameter)] = colour;
+                    }
+                    else // if outside the circle
+                    {
+                        pixelColours[xCoordinate + (yCoordinate * diameter)] = Color.Transparent;
+                    }
+                }
+            }
+            circleTexture.SetData(pixelColours); // maps the array of colours onto the texture
+            return circleTexture;
+        }
+
+        private Texture2D CreateEightBallTexture(GraphicsDevice graphicsDevice, int radius, Color colour) // [unfinished, not implemented]
+        {
+            int diameter = radius * 2;
+            Texture2D circleTexture = new(graphicsDevice, diameter, diameter); // empty texture the size of the circle
+            Color[] pixelColours = new Color[diameter * diameter];
+
+
+            circleTexture.SetData(pixelColours); // maps the array of colours onto the texture
+            return circleTexture;
+        }
+
+        private Texture2D CreateVerticalLineTexture(GraphicsDevice graphicsDevice, int length, int thickness, Color colour)
+        {
+            Texture2D lineTexture = new(graphicsDevice, thickness, length); // empty texture the size of the line
+            Color[] pixelColours = new Color[length * thickness];
+
+            for (int i = 0; i < length * thickness; i++)
+            {
+                pixelColours[i] = colour;
+            }
+
+            lineTexture.SetData(pixelColours); // maps the array of colours onto the texture
+            return lineTexture;
+        }
+
+
+        private Texture2D CreateTrapeziumTexture(GraphicsDevice graphicsDevice, int length, int width, Color color, int orientation) 
+        {
+            // for trapeziums with only horizontal, vertical, and diagonal edges and one line of symmetry
+
+            // if orientation == 1, it will have the shape: /___\
+            // if orientation == 2, it will have the shape: /___\ rotated 90 degrees anticlockwise
+            // if orientation == 3, it will have the shape: /___\ rotated 180 degrees
+            // if orientation == 4, it will have the shape: /___\ rotated 90 degrees clockwise
+
+            if (orientation < 1 | orientation > 4)
+            {
+                throw new ArgumentException("orientation must be between 1 and 4 inclusive");
+            }
+
+            Color[] pixelColours = new Color[length * width];
+            Texture2D trapeziumTexture;
+
+            switch (orientation)
+            {
+                case 1:
+                    trapeziumTexture = new(graphicsDevice, length, width); // empty texture the size of the trapezium
+                    for (int column = 0; column < length; column++)
+                    {
+                        for (int row = 0; row < width; row++)
+                        {
+                            if ((column >= width - row) & (column <= length - (width - row)))
+                            {
+                                pixelColours[column + (row * length)] = color;
+                            }
+                            else
+                            {
+                                pixelColours[column + (row * length)] = Color.Transparent;
+                            }
+                        }
+                    }
+                    break;
+                case 2:
+                    trapeziumTexture = new(graphicsDevice, width, length); // empty texture the size of the trapezium
+                    for (int row = 0; row < length; row++)
+                    {
+                        for (int column = 0; column < width; column++)
+                        {
+                            if (row <= width) // upper section
+                            {
+                                if (column >= width - row)
+                                {
+                                    pixelColours[column + (row * width)] = color;
+                                }
+                                else
+                                {
+                                    pixelColours[column + (row * width)] = Color.Transparent;
+                                }
+                            }
+                            else if (row >= length - width) // lower section
+                            {
+                                if (column >= row - (length - width))
+                                {
+                                    pixelColours[column + (row * width)] = color;
+                                }
+                                else
+                                {
+                                    pixelColours[column + (row * width)] = Color.Transparent;
+                                }
+                            }
+                            else // middle section
+                            {
+                                pixelColours[column + (row * width)] = color;
+                            }
+                        }
+                    }
+                    break;
+                case 3:
+                    trapeziumTexture = new(graphicsDevice, length, width); // empty texture the size of the trapezium
+                    for (int column = 0; column < length; column++)
+                    {
+                        for (int row = 0; row < width; row++)
+                        {
+                            if ((column >= row) & (column <= length - row))
+                            {
+                                pixelColours[column + (row * length)] = color;
+                            }
+                            else
+                            {
+                                pixelColours[column + (row * length)] = Color.Transparent;
+                            }
+                        }
+                    }
+                    break;
+                case 4:
+                    trapeziumTexture = new(graphicsDevice, width, length); // empty texture the size of the trapezium
+                    for (int row = 0; row < length; row++)
+                    {
+                        for (int column = 0; column < width; column++)
+                        {
+                            if (row <= width) // upper section
+                            {
+                                if (column <= row)
+                                {
+                                    pixelColours[column + (row * width)] = color;
+                                }
+                                else
+                                {
+                                    pixelColours[column + (row * width)] = Color.Transparent;
+                                }
+                            }
+                            else if (row >= length - width) // lower section
+                            {
+                                if (column <= length - row)
+                                {
+                                    pixelColours[column + (row * width)] = color;
+                                }
+                                else
+                                {
+                                    pixelColours[column + (row * width)] = Color.Transparent;
+                                }
+                            }
+                            else // middle section
+                            {
+                                pixelColours[column + (row * width)] = color;
+                            }
+                        }
+                    }
+                    break;
+                default: // unreachable, but necessary so that C# thinks that trapeziumTexture is always defined
+                    trapeziumTexture = null;
+                    break;
+            }
+
+            trapeziumTexture.SetData(pixelColours); // maps the array of colours onto the texture
+            return trapeziumTexture;
         }
 
         protected override void Initialize()
@@ -197,21 +414,19 @@ namespace PoolGame
             tablePocketSpacing = 16;
 
 
-            // objects:
-
             // PoolBalls:
 
-            cueBallTexture = Content.Load<Texture2D>("CueBall_transparent_40x40");
+            cueBallTexture = CreateBlockColouredCircleTexture(GraphicsDevice, poolBallRadius, Color.White);
             _cueBall = new CueBall(cueBallTexture, poolBallRadius);
 
-            eightBallTexture = cueBallTexture;
-            _eightBall = new ObjectBall(cueBallTexture, poolBallRadius);
+            eightBallTexture = CreateBlockColouredCircleTexture(GraphicsDevice, poolBallRadius, Color.Black);
+            _eightBall = new ObjectBall(eightBallTexture, poolBallRadius);
+
+            solidObjectBallTexture = CreateBlockColouredCircleTexture(GraphicsDevice, poolBallRadius, Color.Yellow);
+            stripedObjectBallTexture = CreateBlockColouredCircleTexture(GraphicsDevice, poolBallRadius, Color.Red);
 
             float sqrt3 = (float)Math.Sqrt(3); // to not need to repeatedly use Math.Sqrt(3)
             const int spacing = 3; // to avoid frame-1 collisions
-
-            solidObjectBallTexture = Content.Load<Texture2D>("ObjectBall_solid_transparent_40x40");
-            stripedObjectBallTexture = Content.Load<Texture2D>("ObjectBall_striped_transparent_40x40");
 
             // (derivation for exact positions in writeup):
 
@@ -250,7 +465,7 @@ namespace PoolGame
             //pocketRadius
             //tablePocketSpacing
 
-            pocketTexture = Content.Load<Texture2D>("CueBall_transparent_72x72"); // [placeholder]
+            pocketTexture = CreateBlockColouredCircleTexture(GraphicsDevice, pocketRadius, Color.Black);
             _pocketTopLeft = new Pocket(pocketTexture, new Vector2(pocketRadius + tablePocketSpacing, pocketRadius + tablePocketSpacing), pocketRadius);
             _pocketTopMiddle = new Pocket(pocketTexture, new Vector2(Game1.windowWidth / 2, pocketRadius + tablePocketSpacing), pocketRadius);
             _pocketTopRight = new Pocket(pocketTexture, new Vector2(Game1.windowWidth - pocketRadius - tablePocketSpacing, pocketRadius + tablePocketSpacing), pocketRadius);
@@ -260,6 +475,39 @@ namespace PoolGame
 
             pockets = new Pocket[6] { _pocketTopLeft,    _pocketTopMiddle,    _pocketTopRight,
                                       _pocketBottomLeft, _pocketBottomMiddle, _pocketBottomRight };
+
+
+            // cushions:
+            Color cushionColor = new(0x532915);
+
+            int cushionLength = windowWidth / 2; // [placeholder, should be changed]
+            int cushionWidth = (2 * pocketRadius) + tablePocketSpacing;
+
+            cushionTopTexture = CreateTrapeziumTexture(GraphicsDevice, cushionLength, cushionWidth, cushionColor, 3);
+            _cushionTopLeft = new(cushionTopTexture, new Vector2(windowWidth / 4, cushionWidth / 2), cushionLength, cushionWidth, 3);
+            _cushionTopRight = new(cushionTopTexture, new Vector2((3 * windowWidth) / 4, cushionWidth / 2), cushionLength, cushionWidth, 3);
+
+            cushionMddleLeftTexture = CreateTrapeziumTexture(GraphicsDevice, cushionLength, cushionWidth, cushionColor, 4);
+            _cushionMiddleLeft = new(cushionTopTexture, new Vector2(cushionWidth / 2, windowHeight / 2), cushionLength, cushionWidth, 4);
+
+            cushionMddleRightTexture = CreateTrapeziumTexture(GraphicsDevice, cushionLength, cushionWidth, cushionColor, 2);
+            _cushionMiddleRight = new(cushionTopTexture, new Vector2(windowWidth - (cushionWidth / 2), windowHeight / 2), cushionLength, cushionWidth, 3);
+
+            cushionBottomTexture = CreateTrapeziumTexture(GraphicsDevice, cushionLength, cushionWidth, cushionColor, 1);
+            _cushionBottomLeft = new(cushionTopTexture, new Vector2(windowWidth / 4, windowHeight + (cushionWidth / 2)), cushionLength, cushionWidth, 1);
+            _cushionBottomRight = new(cushionTopTexture, new Vector2((3 * windowWidth) / 4, windowHeight + (cushionWidth / 2)), cushionLength, cushionWidth, 1);
+
+            cushions = new Cushion[] { _cushionTopLeft,    _cushionTopRight, 
+                                       _cushionMiddleLeft, _cushionMiddleRight, 
+                                       _cushionBottomLeft, _cushionBottomRight };
+
+
+            // misc. sprites:
+
+            baulkLineTexture = CreateVerticalLineTexture(GraphicsDevice, windowHeight - (4 * pocketRadius) - (2 * tablePocketSpacing), 1, Color.Black);
+            int baultLineCentreX = (windowWidth + (6 * pocketRadius) + (3 * tablePocketSpacing)) / 5; // 1/5th across the playing surface (not 1/5th across entire table)
+            baulkLine = new(baulkLineTexture, new Vector2(baultLineCentreX, windowHeight / 2));
+
 
             base.LoadContent();
         }

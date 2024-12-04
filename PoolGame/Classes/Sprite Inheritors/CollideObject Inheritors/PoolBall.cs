@@ -74,7 +74,7 @@ namespace PoolGame.Classes
             position += velocity - decelerationDueToFriction;
         }
 
-        public void DoBoundsCollision()
+        public void DoBoundsCollision() // [remove, soon to be obsolete due to Cushions.cs]
         {
             // with top:
             // -------------
