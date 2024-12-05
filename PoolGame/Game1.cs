@@ -99,9 +99,22 @@ namespace PoolGame
 
 
         // misc sprites:
+
         public static Sprite baulkLine;
         public Texture2D baulkLineTexture;
 
+        public static Sprite bottomRightTriangle;
+        public Texture2D bottomRightTriangleTexture;
+        public static Sprite topRightTriangle;
+        public Texture2D topRightTriangleTexture;
+        public static Sprite topLeftTriangle;
+        public Texture2D topLeftTriangleTexture;
+        public static Sprite bottomLeftTriangle;
+        public Texture2D bottomLeftTriangleTexture;
+
+
+        //public Texture2D testTexture;
+        //public static Sprite testSprite;
 
         public Game1()
         {
@@ -214,8 +227,7 @@ namespace PoolGame
             return lineTexture;
         }
 
-
-        private Texture2D CreateTrapeziumTexture(GraphicsDevice graphicsDevice, int length, int width, Color color, int orientation) 
+        private Texture2D CreateTrapeziumTexture(GraphicsDevice graphicsDevice, int length, int width, Color colour, int orientation) 
         {
             // for trapeziums with only horizontal, vertical, and diagonal edges and one line of symmetry
 
@@ -242,7 +254,7 @@ namespace PoolGame
                         {
                             if ((column >= width - row) & (column <= length - (width - row)))
                             {
-                                pixelColours[column + (row * length)] = color;
+                                pixelColours[column + (row * length)] = colour;
                             }
                             else
                             {
@@ -261,7 +273,7 @@ namespace PoolGame
                             {
                                 if (column >= width - row)
                                 {
-                                    pixelColours[column + (row * width)] = color;
+                                    pixelColours[column + (row * width)] = colour;
                                 }
                                 else
                                 {
@@ -272,7 +284,7 @@ namespace PoolGame
                             {
                                 if (column >= row - (length - width))
                                 {
-                                    pixelColours[column + (row * width)] = color;
+                                    pixelColours[column + (row * width)] = colour;
                                 }
                                 else
                                 {
@@ -281,7 +293,7 @@ namespace PoolGame
                             }
                             else // middle section
                             {
-                                pixelColours[column + (row * width)] = color;
+                                pixelColours[column + (row * width)] = colour;
                             }
                         }
                     }
@@ -294,7 +306,7 @@ namespace PoolGame
                         {
                             if ((column >= row) & (column <= length - row))
                             {
-                                pixelColours[column + (row * length)] = color;
+                                pixelColours[column + (row * length)] = colour;
                             }
                             else
                             {
@@ -313,7 +325,7 @@ namespace PoolGame
                             {
                                 if (column <= row)
                                 {
-                                    pixelColours[column + (row * width)] = color;
+                                    pixelColours[column + (row * width)] = colour;
                                 }
                                 else
                                 {
@@ -324,7 +336,7 @@ namespace PoolGame
                             {
                                 if (column <= length - row)
                                 {
-                                    pixelColours[column + (row * width)] = color;
+                                    pixelColours[column + (row * width)] = colour;
                                 }
                                 else
                                 {
@@ -333,7 +345,7 @@ namespace PoolGame
                             }
                             else // middle section
                             {
-                                pixelColours[column + (row * width)] = color;
+                                pixelColours[column + (row * width)] = colour;
                             }
                         }
                     }
@@ -345,6 +357,88 @@ namespace PoolGame
 
             trapeziumTexture.SetData(pixelColours); // maps the array of colours onto the texture
             return trapeziumTexture;
+        }
+
+        private Texture2D CreateRightAngledTriangleTexture(GraphicsDevice graphicsDevice, int sideLength, Color colour, int orientation)
+        {
+            // if orientation == 1, it will have the shape: '/|'
+            // if orientation == 2, it will have the shape: '\|' ('/|' rotated 90 degrees anticlockwise)
+            // if orientation == 3, it will have the shape: '|/' ('/|' rotated 180 degrees)
+            // if orientation == 4, it will have the shape: '|\' ('/|' rotated 90 degrees clockwise)
+
+            Texture2D lineTexture = new(graphicsDevice, sideLength, sideLength); // empty texture the size of the line
+            Color[] pixelColours = new Color[sideLength * sideLength];
+
+            switch (orientation)
+            {
+                case 1:
+                    for (int row = 0; row < sideLength; row++)
+                    {
+                        for (int column = 0; column < sideLength; column++)
+                        {
+                            if (column >= sideLength - row)
+                            {
+                                pixelColours[column + (row * sideLength)] = colour;
+                            }
+                            else
+                            {
+                                pixelColours[column + (row * sideLength)] = Color.Transparent;
+                            }
+                        }
+                    }
+                    break;
+                case 2:
+                    for (int row = 0; row < sideLength; row++)
+                    {
+                        for (int column = 0; column < sideLength; column++)
+                        {
+                            if (column >= row)
+                            {
+                                pixelColours[column + (row * sideLength)] = colour;
+                            }
+                            else
+                            {
+                                pixelColours[column + (row * sideLength)] = Color.Transparent;
+                            }
+                        }
+                    }
+                    break;
+                case 3:
+                    for (int row = 0; row < sideLength; row++)
+                    {
+                        for (int column = 0; column < sideLength; column++)
+                        {
+                            if (column <= sideLength - row)
+                            {
+                                pixelColours[column + (row * sideLength)] = colour;
+                            }
+                            else
+                            {
+                                pixelColours[column + (row * sideLength)] = Color.Transparent;
+                            }
+                        }
+                    }
+                    break;
+                case 4:
+                    for (int row = 0; row < sideLength; row++)
+                    {
+                        for (int column = 0; column < sideLength; column++)
+                        {
+                            if (column <= row)
+                            {
+                                pixelColours[column + (row * sideLength)] = colour;
+                            }
+                            else
+                            {
+                                pixelColours[column + (row * sideLength)] = Color.Transparent;
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            lineTexture.SetData(pixelColours); // maps the array of colours onto the texture
+            return lineTexture;
         }
 
         protected override void Initialize()
@@ -425,7 +519,9 @@ namespace PoolGame
             solidObjectBallTexture = CreateBlockColouredCircleTexture(GraphicsDevice, poolBallRadius, Color.Yellow);
             stripedObjectBallTexture = CreateBlockColouredCircleTexture(GraphicsDevice, poolBallRadius, Color.Red);
 
+            // [todo: instead of using Math.Sqrt(), just assign it to a rounded value anyway so you can use constants]
             float sqrt3 = (float)Math.Sqrt(3); // to not need to repeatedly use Math.Sqrt(3)
+            float sqrt2 = (float)Math.Sqrt(2); // to not need to repeatedly use Math.Sqrt(2)
             const int spacing = 3; // to avoid frame-1 collisions
 
             // (derivation for exact positions in writeup):
@@ -478,36 +574,58 @@ namespace PoolGame
 
 
             // cushions:
-            Color cushionColor = new(0x532915);
 
-            int cushionLength = windowWidth / 2; // [placeholder, should be changed]
+            Color cushionColor = Color.Sienna;
+
+            int topBottomCushionLength = (int)((windowWidth / 2) + tablePocketSpacing - (sqrt2 * pocketRadius));
+            int middleCushionLength = (int)(windowHeight - (2 * sqrt2 * pocketRadius));
             int cushionWidth = (2 * pocketRadius) + tablePocketSpacing;
+            int topBottomLeftCushionCentreX = (int)(((windowWidth / 2) + tablePocketSpacing + (sqrt2 * pocketRadius)) / 2);
+            int topBottomRightCushionCentreX = windowWidth - topBottomLeftCushionCentreX;
 
-            cushionTopTexture = CreateTrapeziumTexture(GraphicsDevice, cushionLength, cushionWidth, cushionColor, 3);
-            _cushionTopLeft = new(cushionTopTexture, new Vector2(windowWidth / 4, cushionWidth / 2), cushionLength, cushionWidth, 3);
-            _cushionTopRight = new(cushionTopTexture, new Vector2((3 * windowWidth) / 4, cushionWidth / 2), cushionLength, cushionWidth, 3);
+            cushionTopTexture = CreateTrapeziumTexture(GraphicsDevice, topBottomCushionLength, cushionWidth, cushionColor, 3);
+            _cushionTopLeft = new(cushionTopTexture, new Vector2(topBottomLeftCushionCentreX, cushionWidth / 2), topBottomCushionLength, cushionWidth, 3);
+            _cushionTopRight = new(cushionTopTexture, new Vector2(topBottomRightCushionCentreX, cushionWidth / 2), topBottomCushionLength, cushionWidth, 3);
 
-            cushionMddleLeftTexture = CreateTrapeziumTexture(GraphicsDevice, cushionLength, cushionWidth, cushionColor, 4);
-            _cushionMiddleLeft = new(cushionTopTexture, new Vector2(cushionWidth / 2, windowHeight / 2), cushionLength, cushionWidth, 4);
+            cushionMddleLeftTexture = CreateTrapeziumTexture(GraphicsDevice, middleCushionLength, cushionWidth, cushionColor, 4);
+            _cushionMiddleLeft = new(cushionMddleLeftTexture, new Vector2(cushionWidth / 2, windowHeight / 2), middleCushionLength, cushionWidth, 4);
 
-            cushionMddleRightTexture = CreateTrapeziumTexture(GraphicsDevice, cushionLength, cushionWidth, cushionColor, 2);
-            _cushionMiddleRight = new(cushionTopTexture, new Vector2(windowWidth - (cushionWidth / 2), windowHeight / 2), cushionLength, cushionWidth, 3);
+            cushionMddleRightTexture = CreateTrapeziumTexture(GraphicsDevice, middleCushionLength, cushionWidth, cushionColor, 2);
+            _cushionMiddleRight = new(cushionMddleRightTexture, new Vector2(windowWidth - (cushionWidth / 2), windowHeight / 2), middleCushionLength, cushionWidth, 2);
 
-            cushionBottomTexture = CreateTrapeziumTexture(GraphicsDevice, cushionLength, cushionWidth, cushionColor, 1);
-            _cushionBottomLeft = new(cushionTopTexture, new Vector2(windowWidth / 4, windowHeight + (cushionWidth / 2)), cushionLength, cushionWidth, 1);
-            _cushionBottomRight = new(cushionTopTexture, new Vector2((3 * windowWidth) / 4, windowHeight + (cushionWidth / 2)), cushionLength, cushionWidth, 1);
+            cushionBottomTexture = CreateTrapeziumTexture(GraphicsDevice, topBottomCushionLength, cushionWidth, cushionColor, 1);
+            _cushionBottomLeft = new(cushionBottomTexture, new Vector2(topBottomLeftCushionCentreX, windowHeight - (cushionWidth / 2)), topBottomCushionLength, cushionWidth, 1);
+            _cushionBottomRight = new(cushionBottomTexture, new Vector2(topBottomRightCushionCentreX, windowHeight - (cushionWidth / 2)), topBottomCushionLength, cushionWidth, 1);
 
             cushions = new Cushion[] { _cushionTopLeft,    _cushionTopRight, 
                                        _cushionMiddleLeft, _cushionMiddleRight, 
                                        _cushionBottomLeft, _cushionBottomRight };
 
+            // triangles fill in the rest of the sides, they don't need collisions because they are always behind pockets:
+
+            bottomRightTriangleTexture = CreateRightAngledTriangleTexture(GraphicsDevice, 2 * (pocketRadius + tablePocketSpacing), cushionColor, 1);
+            bottomRightTriangle = new(bottomRightTriangleTexture, new Vector2(windowWidth - (pocketRadius + tablePocketSpacing), windowHeight - (pocketRadius + tablePocketSpacing)));
+
+            topLeftTriangleTexture = CreateRightAngledTriangleTexture(GraphicsDevice, 2 * (pocketRadius + tablePocketSpacing), cushionColor, 2);
+            topLeftTriangle = new(topLeftTriangleTexture, new Vector2(windowWidth - (pocketRadius + tablePocketSpacing), pocketRadius + tablePocketSpacing));
+
+            topRightTriangleTexture = CreateRightAngledTriangleTexture(GraphicsDevice, 2 * (pocketRadius + tablePocketSpacing), cushionColor, 3);
+            topRightTriangle = new(topRightTriangleTexture, new Vector2(pocketRadius + tablePocketSpacing, pocketRadius + tablePocketSpacing));
+
+            bottomLeftTriangleTexture = CreateRightAngledTriangleTexture(GraphicsDevice, 2 * (pocketRadius + tablePocketSpacing), cushionColor, 4);
+            bottomLeftTriangle = new(bottomLeftTriangleTexture, new Vector2(pocketRadius + tablePocketSpacing, windowHeight - (pocketRadius + tablePocketSpacing)));
+
 
             // misc. sprites:
 
-            baulkLineTexture = CreateVerticalLineTexture(GraphicsDevice, windowHeight - (4 * pocketRadius) - (2 * tablePocketSpacing), 1, Color.Black);
+            baulkLineTexture = CreateVerticalLineTexture(GraphicsDevice, windowHeight - (4 * pocketRadius) - (2 * tablePocketSpacing), 3, Color.Black);
             int baultLineCentreX = (windowWidth + (6 * pocketRadius) + (3 * tablePocketSpacing)) / 5; // 1/5th across the playing surface (not 1/5th across entire table)
             baulkLine = new(baulkLineTexture, new Vector2(baultLineCentreX, windowHeight / 2));
 
+
+
+            //testTexture = CreateRightAngledTriangleTexture(GraphicsDevice, 50, Color.Blue, 3);
+            //testSprite = new(testTexture, new Vector2(100, 100));
 
             base.LoadContent();
         }
