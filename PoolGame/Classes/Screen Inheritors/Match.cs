@@ -42,6 +42,11 @@ namespace PoolGame.Classes
 
             Game1.baulkLine.Draw(Game1._spriteBatch);
 
+            Game1.bottomRightTriangle.Draw(Game1._spriteBatch);
+            Game1.topRightTriangle.Draw(Game1._spriteBatch);
+            Game1.topLeftTriangle.Draw(Game1._spriteBatch);
+            Game1.bottomLeftTriangle.Draw(Game1._spriteBatch);
+
             foreach (Cushion _cushion in Game1.cushions)
             {
                 _cushion.Draw(Game1._spriteBatch);
@@ -57,6 +62,8 @@ namespace PoolGame.Classes
             {
                 _poolBall.Draw(Game1._spriteBatch);
             }
+
+            //Game1.testSprite.Draw(Game1._spriteBatch);
 
             Game1._spriteBatch.End();
         }
