@@ -113,8 +113,9 @@ namespace PoolGame
         public Texture2D bottomLeftTriangleTexture;
 
 
-        //public Texture2D testTexture;
+        public Texture2D testTexture;
         //public static Sprite testSprite;
+        public static Cushion testCushion;
 
         public Game1()
         {
@@ -123,7 +124,7 @@ namespace PoolGame
             IsMouseVisible = true;
 
             // [placeholder resolution]
-            windowWidth = Convert.ToInt32(Console.ReadLine()); ; // default 1280
+            windowWidth = 1280; // Convert.ToInt32(Console.ReadLine()); ; // default 1280
             windowHeight = (9 * windowWidth) / 16; // 720 if windowWidth = 1280
             _graphics.PreferredBackBufferWidth = windowWidth; // default window width
             _graphics.PreferredBackBufferHeight = windowHeight; // default window height
@@ -625,6 +626,8 @@ namespace PoolGame
 
             //testTexture = CreateRightAngledTriangleTexture(GraphicsDevice, 50, Color.Blue, 3);
             //testSprite = new(testTexture, new Vector2(100, 100));
+            testTexture = CreateTrapeziumTexture(GraphicsDevice, 200, 100, Color.Aqua, 1);
+            testCushion = new(testTexture, new Vector2(400, 500), 200, 100, 1);
 
             base.LoadContent();
         }
