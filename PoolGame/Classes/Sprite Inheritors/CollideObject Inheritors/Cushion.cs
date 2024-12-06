@@ -44,9 +44,11 @@ namespace PoolGame.Classes
                     for (int i = 0; i < Game1.poolBalls.Count; i++)
                     {
                         // left triangle:
-                        if (true)
+                        if ((Game1.poolBalls[i].position.X > position.X - (length / 2))
+                          & (Game1.poolBalls[i].position.X < position.X - (length / 2) + width)
+                          & ((position.X + position.Y - (Game1.poolBalls[i].position.X + Game1.poolBalls[i].position.Y) + (0.5 * (width - length))) / Math.Sqrt(2) <= Game1.poolBalls[i].radius))
                         {
-                            
+                            Game1.poolBalls[i].velocity = new Vector2(-Game1.poolBalls[i].velocity.Y, -Game1.poolBalls[i].velocity.X);
                         }
 
                         // right triangle:
