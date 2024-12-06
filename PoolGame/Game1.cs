@@ -123,8 +123,8 @@ namespace PoolGame
             IsMouseVisible = true;
 
             // [placeholder resolution]
-            windowWidth = 1280;
-            windowHeight = 720;
+            windowWidth = Convert.ToInt32(Console.ReadLine()); ; // default 1280
+            windowHeight = (9 * windowWidth) / 16; // 720 if windowWidth = 1280
             _graphics.PreferredBackBufferWidth = windowWidth; // default window width
             _graphics.PreferredBackBufferHeight = windowHeight; // default window height
             _graphics.ApplyChanges();
@@ -457,8 +457,7 @@ namespace PoolGame
 
             // UI Setup:
 
-            // initialising Myra and loading the MyraMain.xmmp file:
-            MyraEnvironment.Game = this;
+            MyraEnvironment.Game = this; // initialising Myra
 
             var grid = new Grid
             {
@@ -503,9 +502,9 @@ namespace PoolGame
             _desktop.Root = grid;
 
             // sizing:
-            poolBallRadius = 20;
-            pocketRadius = 36;
-            tablePocketSpacing = 16;
+            poolBallRadius = windowWidth / 64; // 20 for windowWidth = 1280
+            pocketRadius = (9 * windowWidth) / 320; // 36 for windowWidth = 1280
+            tablePocketSpacing = (windowWidth / 80); // 16 for windowWidth = 1280
 
 
             // PoolBalls:
