@@ -34,8 +34,6 @@ namespace PoolGame.Classes
             {
                 _cushion.Update(gameTime);
             }
-
-            Game1.testCushion.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
@@ -66,7 +64,6 @@ namespace PoolGame.Classes
             }
 
             //Game1.testSprite.Draw(Game1._spriteBatch);
-            Game1.testCushion.Draw(Game1._spriteBatch);
 
             Game1._spriteBatch.End();
         }

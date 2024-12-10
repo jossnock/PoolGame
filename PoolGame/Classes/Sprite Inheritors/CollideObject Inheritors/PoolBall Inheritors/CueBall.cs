@@ -13,7 +13,6 @@ namespace PoolGame.Classes
 {
     public class CueBall : PoolBall
     {
-        private MouseState previousMouseState;
 
         public CueBall(Texture2D texture, float radius) : base(texture, radius)
         {
@@ -22,26 +21,37 @@ namespace PoolGame.Classes
             position = new Vector2(cueBallCentreX, Game1.windowHeight / 2);
         }
 
-        public void Shoot()
+        public void Shoot(Vector2 mousePosition)
         {
-            Vector2 mousePosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
-            Vector2 movementVector = mousePosition - position;
+            Vector2 movementVector = mousePosition - position; // calculatingh the distance between the cue ball and the mouse to form a direction with some magnitude
 
             velocity += movementVector * VelocityMultiplier;
+        }
+
+        public void DebugMove(Vector2 mousePosition)
+        {
+            velocity = Vector2.Zero;
+            position = mousePosition;
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            MouseState currentMouseState = Mouse.GetState();
 
-            if ((currentMouseState.LeftButton == ButtonState.Pressed) & (Game1.IsAllStationary() == true)) // only allowed to input movement when stationary
+            Vector2 currentMousePosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+
+            if ((Mouse.GetState().LeftButton == ButtonState.Pressed) 
+              & (Game1.IsAllStationary() == true)) // only allowed to shoot again when everything is stationary
+              // [todo: keep in window]: & )currentMousePosition.X > 0 & currentMousePosition.X < Game1.windowWidth & currentMousePosition.Y > 0 & currentMousePosition.Y < Game1.windowHeight)
             {
-                Shoot();
-            }
+                Shoot(currentMousePosition);
+            };
 
-            previousMouseState = currentMouseState;
+            if (Mouse.GetState().RightButton == ButtonState.Pressed)
+            {
+                DebugMove(currentMousePosition);
+            }
         }
     }
 }

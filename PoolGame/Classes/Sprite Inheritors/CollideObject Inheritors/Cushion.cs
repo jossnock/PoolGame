@@ -37,33 +37,38 @@ namespace PoolGame.Classes
 
         public void DoCollisions()
         {
+            
             switch (orientation)
             {
-                // directions are from viewing the trapezium as if it's orientation = 1
+                // NOTE: directions are from viewing the trapezium as if it's orientation = 1
                 case 1:
                     for (int i = 0; i < Game1.poolBalls.Count; i++)
                     {
-                        // left triangle:
-                        if ((Game1.poolBalls[i].position.X > position.X - (length / 2))
-                          & (Game1.poolBalls[i].position.X < position.X - (length / 2) + width)
-                          & ((position.X + position.Y - (Game1.poolBalls[i].position.X + Game1.poolBalls[i].position.Y) + (0.5 * (width - length))) / Math.Sqrt(2) <= Game1.poolBalls[i].radius))
-                        {
-                            Game1.poolBalls[i].velocity = new Vector2(-Game1.poolBalls[i].velocity.Y, -Game1.poolBalls[i].velocity.X);
-                        }
-
-                        // right triangle:
-                        if (true)
-                        {
-
-                        }
-
                         // middle:
-                        if ((Game1.poolBalls[i].position.X > position.X - (length / 2) + width) 
-                          & (Game1.poolBalls[i].position.X < position.X + (length / 2) - width)
-                          & (Game1.poolBalls[i].position.Y + Game1.poolBalls[i].radius > position.Y - (width / 2)))
+                        if ((Game1.poolBalls[i].position.X > position.X - (length / 2) + width)  // if it's in the column of the screen that has this section of the trapezium
+                          & (Game1.poolBalls[i].position.X < position.X + (length / 2) - width) // if it's in the column of the screen that has this section of the trapezium
+                          & (Game1.poolBalls[i].position.Y + Game1.poolBalls[i].radius > position.Y - (width / 2))) // if it's below the top side of the trapezium
                         {
                             Game1.poolBalls[i].position = new Vector2(Game1.poolBalls[i].position.X, position.Y - Game1.poolBalls[i].radius - (width / 2)); // places it outside of hitbox
                             Game1.poolBalls[i].velocity = new Vector2(Game1.poolBalls[i].velocity.X, -Game1.poolBalls[i].velocity.Y); // reflected horizontally
+                        }
+
+                        // left triangle:
+                        if ((Game1.poolBalls[i].position.X > position.X - (length / 2) - Game1.poolBalls[i].radius) // if in the column of the screen that has this section of the trapezium
+                          & (Game1.poolBalls[i].position.X < position.X - (length / 2) + width) // if in the column of the screen that has this section of the trapezium
+                          & (Math.Abs(((position.X + position.Y) - (Game1.poolBalls[i].position.X + Game1.poolBalls[i].position.Y) + (0.5 * (width - length)))) / Game1.sqrt_2 < Game1.poolBalls[i].radius))
+                        {
+                            // [todo: add repositioning]: Game1.poolBalls[i].position = new Vector2(); // places it outside of hitbox
+                            Game1.poolBalls[i].velocity = new Vector2(-Game1.poolBalls[i].velocity.Y, -Game1.poolBalls[i].velocity.X); // reflected
+                        }
+
+                        // right triangle:
+                        if ((Game1.poolBalls[i].position.X > position.X + (length / 2) - width) // if in the column of the screen that has this section of the trapezium
+                          & (Game1.poolBalls[i].position.X < position.X + (length / 2) + Game1.poolBalls[i].radius) // if in the column of the screen that has this section of the trapezium
+                          & (Math.Abs(((position.Y - position.X) + (Game1.poolBalls[i].position.X - Game1.poolBalls[i].position.Y) + (0.5 * (width - length)))) / Game1.sqrt_2 < Game1.poolBalls[i].radius))
+                        {
+                            // [todo: add repositioning]: Game1.poolBalls[i].position = new Vector2(); // places it outside of hitbox
+                            Game1.poolBalls[i].velocity = new Vector2(Game1.poolBalls[i].velocity.Y, Game1.poolBalls[i].velocity.X); // reflected
                         }
 
                         // left corner:
@@ -75,15 +80,21 @@ namespace PoolGame.Classes
                     for (int i = 0; i < Game1.poolBalls.Count; i++)
                     {
                         // left triangle:
-                        if (true)
+                        if ((Game1.poolBalls[i].position.Y > position.Y + (length / 2) - width) // if in the row of the screen that has this section of the trapezium
+                          & (Game1.poolBalls[i].position.Y < position.Y + (length / 2) + Game1.poolBalls[i].radius) // if in the row of the screen that has this section of the trapezium
+                          & (Math.Abs(((position.X - position.Y) + (Game1.poolBalls[i].position.Y - Game1.poolBalls[i].position.X) + (0.5 * (width - length)))) / Game1.sqrt_2 < Game1.poolBalls[i].radius))
                         {
-
+                            // [todo: add repositioning]: Game1.poolBalls[i].position = new Vector2(); // places it outside of hitbox
+                            Game1.poolBalls[i].velocity = new Vector2(Game1.poolBalls[i].velocity.Y, Game1.poolBalls[i].velocity.X); // reflected
                         }
 
                         // right triangle:
-                        if (true)
+                        if ((Game1.poolBalls[i].position.Y > position.Y - (length / 2) - Game1.poolBalls[i].radius) // if in the row of the screen that has this section of the trapezium
+                          & (Game1.poolBalls[i].position.Y < position.Y - (length / 2) + width) // if in the row of the screen that has this section of the trapezium
+                          & (Math.Abs(((position.X + position.Y) - (Game1.poolBalls[i].position.Y + Game1.poolBalls[i].position.X) + (0.5 * (width - length)))) / Game1.sqrt_2 < Game1.poolBalls[i].radius))
                         {
-
+                            // [todo: add repositioning]: Game1.poolBalls[i].position = new Vector2(); // places it outside of hitbox
+                            Game1.poolBalls[i].velocity = new Vector2(-Game1.poolBalls[i].velocity.Y, -Game1.poolBalls[i].velocity.X); // reflected
                         }
 
                         // middle:
@@ -103,18 +114,6 @@ namespace PoolGame.Classes
                 case 3:
                     for (int i = 0; i < Game1.poolBalls.Count; i++)
                     {
-                        // left triangle:
-                        if (true)
-                        {
-
-                        }
-
-                        // right triangle:
-                        if (true)
-                        {
-
-                        }
-
                         // middle:
                         if ((Game1.poolBalls[i].position.X > position.X - (length / 2) + width)
                           & (Game1.poolBalls[i].position.X < position.X + (length / 2) - width)
@@ -122,6 +121,24 @@ namespace PoolGame.Classes
                         {
                             Game1.poolBalls[i].position = new Vector2(Game1.poolBalls[i].position.X, position.Y + Game1.poolBalls[i].radius + (width / 2)); // places it outside of hitbox
                             Game1.poolBalls[i].velocity = new Vector2(Game1.poolBalls[i].velocity.X, -Game1.poolBalls[i].velocity.Y); // reflected horizontally
+                        }
+
+                        // left triangle:
+                        if ((Game1.poolBalls[i].position.X > position.X + (length / 2) - width) // if in the column of the screen that has this section of the trapezium
+                          & (Game1.poolBalls[i].position.X < position.X + (length / 2) + Game1.poolBalls[i].radius) // if in the column of the screen that has this section of the trapezium
+                          & (Math.Abs(((position.X + position.Y) - (Game1.poolBalls[i].position.X + Game1.poolBalls[i].position.Y) + (0.5 * (length - width)))) / Game1.sqrt_2 < Game1.poolBalls[i].radius))
+                        {
+                            // [todo: add repositioning]: Game1.poolBalls[i].position = new Vector2(); // places it outside of hitbox
+                            Game1.poolBalls[i].velocity = new Vector2(-Game1.poolBalls[i].velocity.Y, -Game1.poolBalls[i].velocity.X); // reflected
+                        }
+
+                        // right triangle:
+                        if ((Game1.poolBalls[i].position.X > position.X - (length / 2) - Game1.poolBalls[i].radius) // if in the column of the screen that has this section of the trapezium
+                          & (Game1.poolBalls[i].position.X < position.X - (length / 2) + width) // if in the column of the screen that has this section of the trapezium
+                          & (Math.Abs(((position.X - position.Y) + (Game1.poolBalls[i].position.Y - Game1.poolBalls[i].position.X) + (0.5 * (width - length)))) / Game1.sqrt_2 < Game1.poolBalls[i].radius))
+                        {
+                            // [todo: add repositioning]: Game1.poolBalls[i].position = new Vector2(); // places it outside of hitbox
+                            Game1.poolBalls[i].velocity = new Vector2(Game1.poolBalls[i].velocity.Y, Game1.poolBalls[i].velocity.X); // reflected
                         }
 
                         // left corner:
@@ -133,15 +150,21 @@ namespace PoolGame.Classes
                     for (int i = 0; i < Game1.poolBalls.Count; i++)
                     {
                         // left triangle:
-                        if (true)
+                        if ((Game1.poolBalls[i].position.Y > position.Y - (length / 2) - Game1.poolBalls[i].radius) // if in the row of the screen that has this section of the trapezium
+                          & (Game1.poolBalls[i].position.Y < position.Y - (length / 2) + width) // if in the row of the screen that has this section of the trapezium
+                          & (Math.Abs(((position.X - position.Y) + (Game1.poolBalls[i].position.Y - Game1.poolBalls[i].position.X) + (0.5 * (length - width)))) / Game1.sqrt_2 < Game1.poolBalls[i].radius))
                         {
-
+                            // [todo: add repositioning]: Game1.poolBalls[i].position = new Vector2(); // places it outside of hitbox
+                            Game1.poolBalls[i].velocity = new Vector2(Game1.poolBalls[i].velocity.Y, Game1.poolBalls[i].velocity.X); // reflected
                         }
 
                         // right triangle:
-                        if (true)
+                        if ((Game1.poolBalls[i].position.Y > position.Y + (length / 2) - width) // if in the row of the screen that has this section of the trapezium
+                          & (Game1.poolBalls[i].position.Y < position.Y + (length / 2) + Game1.poolBalls[i].radius) // if in the row of the screen that has this section of the trapezium
+                          & (Math.Abs(((position.X + position.Y) - (Game1.poolBalls[i].position.Y + Game1.poolBalls[i].position.X) + (0.5 * (length - width)))) / Game1.sqrt_2 < Game1.poolBalls[i].radius))
                         {
-
+                            // [todo: add repositioning]: Game1.poolBalls[i].position = new Vector2(); // places it outside of hitbox
+                            Game1.poolBalls[i].velocity = new Vector2(-Game1.poolBalls[i].velocity.Y, -Game1.poolBalls[i].velocity.X); // reflected
                         }
 
                         // middle:
@@ -156,8 +179,8 @@ namespace PoolGame.Classes
                         // left corner:
 
                         // right corner:
-                    }
-                    break;
+                }
+                break;
             }
         }
 

@@ -113,9 +113,13 @@ namespace PoolGame
         public Texture2D bottomLeftTriangleTexture;
 
 
-        public Texture2D testTexture;
+        //public Texture2D testTexture;
         //public static Sprite testSprite;
-        public static Cushion testCushion;
+
+
+        // constants:
+        public const float sqrt_2 = 1.41421356237f; // to not need to repeatedly use Math.Sqrt(2), plus C# doesn't like the results of Math.Sqrt() being assigned as a constant
+        public const float sqrt_3 = 1.73205080757f; // to not need to repeatedly use Math.Sqrt(3), plus C# doesn't like the results of Math.Sqrt() being assigned as a constant
 
         public Game1()
         {
@@ -189,11 +193,11 @@ namespace PoolGame
                     // centre is at the point: (radius, radius)
                     int distanceSquared = ((radius - xCoordinate) * (radius - xCoordinate)) + ((radius - yCoordinate) * (radius - yCoordinate)); // square root isn't necessary because it can be compared to radius^2
 
-                    if (distanceSquared <= radius * radius) // if inside the circle
+                    if (distanceSquared < radius * radius) // note: <= produces some spikey edges whereas < doesn't
                     {
                         pixelColours[xCoordinate + (yCoordinate * diameter)] = colour;
                     }
-                    else // if outside the circle
+                    else
                     {
                         pixelColours[xCoordinate + (yCoordinate * diameter)] = Color.Transparent;
                     }
@@ -511,49 +515,46 @@ namespace PoolGame
             // PoolBalls:
 
             cueBallTexture = CreateBlockColouredCircleTexture(GraphicsDevice, poolBallRadius, Color.White);
-            _cueBall = new CueBall(cueBallTexture, poolBallRadius);
+            _cueBall = new(cueBallTexture, poolBallRadius);
 
             eightBallTexture = CreateBlockColouredCircleTexture(GraphicsDevice, poolBallRadius, Color.Black);
-            _eightBall = new ObjectBall(eightBallTexture, poolBallRadius);
+            _eightBall = new(eightBallTexture, poolBallRadius);
 
             solidObjectBallTexture = CreateBlockColouredCircleTexture(GraphicsDevice, poolBallRadius, Color.Yellow);
             stripedObjectBallTexture = CreateBlockColouredCircleTexture(GraphicsDevice, poolBallRadius, Color.Red);
 
-            // [todo: instead of using Math.Sqrt(), just assign it to a rounded value anyway so you can use constants]
-            float sqrt3 = (float)Math.Sqrt(3); // to not need to repeatedly use Math.Sqrt(3)
-            float sqrt2 = (float)Math.Sqrt(2); // to not need to repeatedly use Math.Sqrt(2)
-            const int spacing = 3; // to avoid frame-1 collisions
+            const int spacing = 3; // to reduce messy collisions
 
             // (derivation for exact positions in writeup):
 
             // first column:
-            _solidObjectBall1 = new ObjectBall(solidObjectBallTexture, new Vector2(_eightBall.position.X - (2 * poolBallRadius * sqrt3) - (2 * spacing), _eightBall.position.Y), poolBallRadius, false);
+            _solidObjectBall1 = new(solidObjectBallTexture, new Vector2(_eightBall.position.X - (2 * poolBallRadius * sqrt_3) - (2 * spacing), _eightBall.position.Y), poolBallRadius, false);
 
             // second column:
-            _solidObjectBall2 = new ObjectBall(solidObjectBallTexture, new Vector2(_eightBall.position.X - (poolBallRadius * sqrt3) - spacing, _eightBall.position.Y + poolBallRadius + spacing), poolBallRadius, false);
-            _stripedObjectBall1 = new ObjectBall(stripedObjectBallTexture, new Vector2(_eightBall.position.X - (poolBallRadius * sqrt3) - spacing, _eightBall.position.Y - poolBallRadius - spacing), poolBallRadius, false);
+            _solidObjectBall2 = new(solidObjectBallTexture, new Vector2(_eightBall.position.X - (poolBallRadius * sqrt_3) - spacing, _eightBall.position.Y + poolBallRadius + spacing), poolBallRadius, false);
+            _stripedObjectBall1 = new(stripedObjectBallTexture, new Vector2(_eightBall.position.X - (poolBallRadius * sqrt_3) - spacing, _eightBall.position.Y - poolBallRadius - spacing), poolBallRadius, false);
 
             // third column:
-            _stripedObjectBall2 = new ObjectBall(stripedObjectBallTexture, new Vector2(_eightBall.position.X, _eightBall.position.Y + (2 * poolBallRadius) + spacing), poolBallRadius, false);
+            _stripedObjectBall2 = new(stripedObjectBallTexture, new Vector2(_eightBall.position.X, _eightBall.position.Y + (2 * poolBallRadius) + spacing), poolBallRadius, false);
             // (eight ball goes here)
-            _solidObjectBall3 = new ObjectBall(solidObjectBallTexture, new Vector2(_eightBall.position.X, _eightBall.position.Y - (2 * poolBallRadius) - spacing), poolBallRadius, false);
+            _solidObjectBall3 = new(solidObjectBallTexture, new Vector2(_eightBall.position.X, _eightBall.position.Y - (2 * poolBallRadius) - spacing), poolBallRadius, false);
 
             // fourth column:
-            _solidObjectBall4 = new ObjectBall(solidObjectBallTexture, new Vector2(_eightBall.position.X + (poolBallRadius * sqrt3) + spacing, _eightBall.position.Y + (3 * poolBallRadius) + (2 * spacing)), poolBallRadius, false);
-            _stripedObjectBall3 = new ObjectBall(stripedObjectBallTexture, new Vector2(_eightBall.position.X + (poolBallRadius * sqrt3) + spacing, _eightBall.position.Y + poolBallRadius + spacing), poolBallRadius, false);
-            _solidObjectBall5 = new ObjectBall(solidObjectBallTexture, new Vector2(_eightBall.position.X + (poolBallRadius * sqrt3) + spacing, _eightBall.position.Y - poolBallRadius - spacing), poolBallRadius, false);
-            _stripedObjectBall4 = new ObjectBall(stripedObjectBallTexture, new Vector2(_eightBall.position.X + (poolBallRadius * sqrt3) + spacing, _eightBall.position.Y - (3 * poolBallRadius) - (2 * spacing)), poolBallRadius, false);
+            _solidObjectBall4 = new(solidObjectBallTexture, new Vector2(_eightBall.position.X + (poolBallRadius * sqrt_3) + spacing, _eightBall.position.Y + (3 * poolBallRadius) + (2 * spacing)), poolBallRadius, false);
+            _stripedObjectBall3 = new(stripedObjectBallTexture, new Vector2(_eightBall.position.X + (poolBallRadius * sqrt_3) + spacing, _eightBall.position.Y + poolBallRadius + spacing), poolBallRadius, false);
+            _solidObjectBall5 = new(solidObjectBallTexture, new Vector2(_eightBall.position.X + (poolBallRadius * sqrt_3) + spacing, _eightBall.position.Y - poolBallRadius - spacing), poolBallRadius, false);
+            _stripedObjectBall4 = new(stripedObjectBallTexture, new Vector2(_eightBall.position.X + (poolBallRadius * sqrt_3) + spacing, _eightBall.position.Y - (3 * poolBallRadius) - (2 * spacing)), poolBallRadius, false);
 
             // fith column:
-            _stripedObjectBall5 = new ObjectBall(stripedObjectBallTexture, new Vector2(_eightBall.position.X + (2 * poolBallRadius * sqrt3) + (2 * spacing), _eightBall.position.Y + (4 * poolBallRadius) + (2 * spacing)), poolBallRadius, false);
-            _solidObjectBall6 = new ObjectBall(solidObjectBallTexture, new Vector2(_eightBall.position.X + (2 * poolBallRadius * sqrt3) + (2 * spacing), _eightBall.position.Y + (2 * poolBallRadius) + spacing), poolBallRadius, false);
-            _stripedObjectBall6 = new ObjectBall(stripedObjectBallTexture, new Vector2(_eightBall.position.X + (2 * poolBallRadius * sqrt3) + (2 * spacing), _eightBall.position.Y), poolBallRadius, false);
-            _stripedObjectBall7 = new ObjectBall(stripedObjectBallTexture, new Vector2(_eightBall.position.X + (2 * poolBallRadius * sqrt3) + (2 * spacing), _eightBall.position.Y - (2 * poolBallRadius) - spacing), poolBallRadius, false);
-            _solidObjectBall7 = new ObjectBall(solidObjectBallTexture, new Vector2(_eightBall.position.X + (2 * poolBallRadius * sqrt3) + (2 * spacing), _eightBall.position.Y - (4 * poolBallRadius) - (2 * spacing)), poolBallRadius, false);
+            _stripedObjectBall5 = new(stripedObjectBallTexture, new Vector2(_eightBall.position.X + (2 * poolBallRadius * sqrt_3) + (2 * spacing), _eightBall.position.Y + (4 * poolBallRadius) + (2 * spacing)), poolBallRadius, false);
+            _solidObjectBall6 = new(solidObjectBallTexture, new Vector2(_eightBall.position.X + (2 * poolBallRadius * sqrt_3) + (2 * spacing), _eightBall.position.Y + (2 * poolBallRadius) + spacing), poolBallRadius, false);
+            _stripedObjectBall6 = new(stripedObjectBallTexture, new Vector2(_eightBall.position.X + (2 * poolBallRadius * sqrt_3) + (2 * spacing), _eightBall.position.Y), poolBallRadius, false);
+            _stripedObjectBall7 = new(stripedObjectBallTexture, new Vector2(_eightBall.position.X + (2 * poolBallRadius * sqrt_3) + (2 * spacing), _eightBall.position.Y - (2 * poolBallRadius) - spacing), poolBallRadius, false);
+            _solidObjectBall7 = new(solidObjectBallTexture, new Vector2(_eightBall.position.X + (2 * poolBallRadius * sqrt_3) + (2 * spacing), _eightBall.position.Y - (4 * poolBallRadius) - (2 * spacing)), poolBallRadius, false);
 
             poolBalls = new List<PoolBall> { _cueBall, _eightBall,
-                                         _solidObjectBall1, _solidObjectBall2, _solidObjectBall3, _solidObjectBall4, _solidObjectBall5, _solidObjectBall6, _solidObjectBall7,
-                                         _stripedObjectBall1, _stripedObjectBall2, _stripedObjectBall3, _stripedObjectBall4, _stripedObjectBall5, _stripedObjectBall6, _stripedObjectBall7};
+                                             _solidObjectBall1, _solidObjectBall2, _solidObjectBall3, _solidObjectBall4, _solidObjectBall5, _solidObjectBall6, _solidObjectBall7,
+                                             _stripedObjectBall1, _stripedObjectBall2, _stripedObjectBall3, _stripedObjectBall4, _stripedObjectBall5, _stripedObjectBall6, _stripedObjectBall7};
 
 
             // Pockets:
@@ -563,11 +564,11 @@ namespace PoolGame
 
             pocketTexture = CreateBlockColouredCircleTexture(GraphicsDevice, pocketRadius, Color.Black);
             _pocketTopLeft = new Pocket(pocketTexture, new Vector2(pocketRadius + tablePocketSpacing, pocketRadius + tablePocketSpacing), pocketRadius);
-            _pocketTopMiddle = new Pocket(pocketTexture, new Vector2(Game1.windowWidth / 2, pocketRadius + tablePocketSpacing), pocketRadius);
-            _pocketTopRight = new Pocket(pocketTexture, new Vector2(Game1.windowWidth - pocketRadius - tablePocketSpacing, pocketRadius + tablePocketSpacing), pocketRadius);
-            _pocketBottomLeft = new Pocket(pocketTexture, new Vector2(pocketRadius + tablePocketSpacing, Game1.windowHeight - pocketRadius - tablePocketSpacing), pocketRadius);
-            _pocketBottomMiddle = new Pocket(pocketTexture, new Vector2(Game1.windowWidth / 2, Game1.windowHeight - pocketRadius - tablePocketSpacing), pocketRadius);
-            _pocketBottomRight = new Pocket(pocketTexture, new Vector2(Game1.windowWidth - pocketRadius - tablePocketSpacing, Game1.windowHeight - pocketRadius - tablePocketSpacing), pocketRadius);
+            _pocketTopMiddle = new Pocket(pocketTexture, new Vector2(windowWidth / 2, pocketRadius + tablePocketSpacing), pocketRadius);
+            _pocketTopRight = new Pocket(pocketTexture, new Vector2(windowWidth - pocketRadius - tablePocketSpacing, pocketRadius + tablePocketSpacing), pocketRadius);
+            _pocketBottomLeft = new Pocket(pocketTexture, new Vector2(pocketRadius + tablePocketSpacing, windowHeight - pocketRadius - tablePocketSpacing), pocketRadius);
+            _pocketBottomMiddle = new Pocket(pocketTexture, new Vector2(windowWidth / 2, windowHeight - pocketRadius - tablePocketSpacing), pocketRadius);
+            _pocketBottomRight = new Pocket(pocketTexture, new Vector2(windowWidth - pocketRadius - tablePocketSpacing, windowHeight - pocketRadius - tablePocketSpacing), pocketRadius);
 
             pockets = new Pocket[6] { _pocketTopLeft,    _pocketTopMiddle,    _pocketTopRight,
                                       _pocketBottomLeft, _pocketBottomMiddle, _pocketBottomRight };
@@ -577,10 +578,10 @@ namespace PoolGame
 
             Color cushionColor = Color.Sienna;
 
-            int topBottomCushionLength = (int)((windowWidth / 2) + tablePocketSpacing - (sqrt2 * pocketRadius));
-            int middleCushionLength = (int)(windowHeight - (2 * sqrt2 * pocketRadius));
+            int topBottomCushionLength = (int)((windowWidth / 2) + tablePocketSpacing - (sqrt_2 * pocketRadius));
+            int middleCushionLength = (int)(windowHeight - (2 * sqrt_2 * pocketRadius));
             int cushionWidth = (2 * pocketRadius) + tablePocketSpacing;
-            int topBottomLeftCushionCentreX = (int)(((windowWidth / 2) + tablePocketSpacing + (sqrt2 * pocketRadius)) / 2);
+            int topBottomLeftCushionCentreX = (int)(((windowWidth / 2) + tablePocketSpacing + (sqrt_2 * pocketRadius)) / 2);
             int topBottomRightCushionCentreX = windowWidth - topBottomLeftCushionCentreX;
 
             cushionTopTexture = CreateTrapeziumTexture(GraphicsDevice, topBottomCushionLength, cushionWidth, cushionColor, 3);
@@ -619,15 +620,13 @@ namespace PoolGame
             // misc. sprites:
 
             baulkLineTexture = CreateVerticalLineTexture(GraphicsDevice, windowHeight - (4 * pocketRadius) - (2 * tablePocketSpacing), 3, Color.Black);
-            int baultLineCentreX = (windowWidth + (6 * pocketRadius) + (3 * tablePocketSpacing)) / 5; // 1/5th across the playing surface (not 1/5th across entire table)
-            baulkLine = new(baulkLineTexture, new Vector2(baultLineCentreX, windowHeight / 2));
+            int baulkLineCentreX = (windowWidth + (6 * pocketRadius) + (3 * tablePocketSpacing)) / 5; // 1/5th across the playing surface (not 1/5th across entire table)
+            baulkLine = new(baulkLineTexture, new Vector2(baulkLineCentreX, windowHeight / 2));
 
 
 
             //testTexture = CreateRightAngledTriangleTexture(GraphicsDevice, 50, Color.Blue, 3);
             //testSprite = new(testTexture, new Vector2(100, 100));
-            testTexture = CreateTrapeziumTexture(GraphicsDevice, 200, 100, Color.Aqua, 1);
-            testCushion = new(testTexture, new Vector2(400, 500), 200, 100, 1);
 
             base.LoadContent();
         }
