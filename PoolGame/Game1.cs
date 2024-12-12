@@ -41,7 +41,7 @@ namespace PoolGame
 
         // pool balls:
 
-        public CueBall _cueBall;
+        public static CueBall _cueBall;
         public Texture2D cueBallTexture; // [placeholder texture], should be ~1/20 the height of the table, currently 40x40 pixels
 
         public ObjectBall _eightBall;
@@ -137,6 +137,13 @@ namespace PoolGame
             Window.AllowUserResizing = true;
         }
 
+
+        // Match screen methods:
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static bool IsAllStationary()
         {
             foreach (PoolBall poolBall in poolBalls)
@@ -175,14 +182,18 @@ namespace PoolGame
             }
         }
 
-        private Texture2D CreateBlockColouredCircleTexture(GraphicsDevice graphicsDevice, int radius, Color colour)
-        {
-            // relatively intensive method since it iterates through an array of a large size
-            // (e.g. size 1600 for a circle with a radius of  20px),
-            // but it's only called a few times and only during initialisation so it shouldn't notably impact performance
 
+        // Texture creating methods:
+
+        /// <summary>
+        /// Creates a texture for a circle with a specified radius and colour.
+        /// </summary>
+        /// <returns>The circle texture.</returns>
+        /// <remarks>This is relatively intensive since it iterates through an array whose size is the number of pixels in the texture (e.g. size 1600 for a radius of 20px), but it's only called a few times and only during <see cref="Initialize"/> so it shouldn't notably impact performance.</remarks>
+        private Texture2D CreateBlockColouredCircleTexture(int radius, Color textureColour)
+        {
             int diameter = radius * 2;
-            Texture2D circleTexture = new(graphicsDevice, diameter, diameter); // empty texture the size of the circle
+            Texture2D circleTexture = new(GraphicsDevice, diameter, diameter); // empty texture the size of the circle
             Color[] pixelColours = new Color[diameter * diameter];
 
             // iterating through array as if it were a coordinate grid to find points easier:
@@ -195,7 +206,7 @@ namespace PoolGame
 
                     if (distanceSquared < radius * radius) // note: <= produces some spikey edges whereas < doesn't
                     {
-                        pixelColours[xCoordinate + (yCoordinate * diameter)] = colour;
+                        pixelColours[xCoordinate + (yCoordinate * diameter)] = textureColour;
                     }
                     else
                     {
@@ -207,10 +218,16 @@ namespace PoolGame
             return circleTexture;
         }
 
-        private Texture2D CreateEightBallTexture(GraphicsDevice graphicsDevice, int radius, Color colour) // [unfinished, not implemented]
+        /// <summary>
+        /// <para>[unfinished, not implemented]</para>
+        /// Creates a texture for the eight ball with a specified radius.
+        /// </summary>
+        /// <returns>The eight ball texture.</returns>
+        /// <remarks>This is relatively intensive since it iterates through an array whose size is the number of pixels in the texture (e.g. size 1600 for a radius of 20px), but it's only called a few times and only during <see cref="Initialize"/> so it shouldn't notably impact performance.</remarks>
+        private Texture2D CreateEightBallTexture(int radius)
         {
             int diameter = radius * 2;
-            Texture2D circleTexture = new(graphicsDevice, diameter, diameter); // empty texture the size of the circle
+            Texture2D circleTexture = new(GraphicsDevice, diameter, diameter); // empty texture the size of the circle
             Color[] pixelColours = new Color[diameter * diameter];
 
 
@@ -218,29 +235,41 @@ namespace PoolGame
             return circleTexture;
         }
 
-        private Texture2D CreateVerticalLineTexture(GraphicsDevice graphicsDevice, int length, int thickness, Color colour)
+        /// <summary>
+        /// Creates a vertical line texture with a specified radius and colour.
+        /// </summary>
+        /// <returns>The vertical line texture.</returns>
+        private Texture2D CreateVerticalLineTexture(int length, int thickness, Color textureColour)
         {
-            Texture2D lineTexture = new(graphicsDevice, thickness, length); // empty texture the size of the line
+            Texture2D lineTexture = new(GraphicsDevice, thickness, length); // empty texture the size of the line
             Color[] pixelColours = new Color[length * thickness];
 
             for (int i = 0; i < length * thickness; i++)
             {
-                pixelColours[i] = colour;
+                pixelColours[i] = textureColour;
             }
 
             lineTexture.SetData(pixelColours); // maps the array of colours onto the texture
             return lineTexture;
         }
 
-        private Texture2D CreateTrapeziumTexture(GraphicsDevice graphicsDevice, int length, int width, Color colour, int orientation) 
+        /// <summary>
+        /// Creates a trapezium texture with a specified radius and colour. 
+        /// Its sides with be parallel to the vertical and horizonal, and 45 degrees from the vertical and horizontal 
+        /// (e.g. if orientation == 1, it will look like: ◢■◣)
+        /// </summary>
+        /// <param name="length">The length of the bottom side when orientation == 1</param>
+        /// <param name="width">The height when orientation == 1</param>
+        /// <param name="orientation">
+        /// <para>if orientation == 1, it will look like: ◢■◣</para>
+        /// <para>if orientation == 2, it will look like: ◢■◣ rotated 90 degrees anticlockwise</para>
+        /// <para>if orientation == 3, it will look like: ◥■◤</para>
+        /// <para>if orientation == 4, it will look like: ◥■◤ rotated 90 degrees anticlockwise</para>
+        /// </param>
+        /// <returns>The trapezium texture.</returns>
+        /// <remarks>This is relatively intensive since it iterates through an array whose size is the number of pixels in the texture (e.g. size 50000 for a length of 500px and a width of 100px), but it's only called a few times and only during <see cref="Initialize"/> so it shouldn't notably impact performance.</remarks>
+        private Texture2D CreateTrapeziumTexture(int length, int width, Color textureColour, int orientation) 
         {
-            // for trapeziums with only horizontal, vertical, and diagonal edges and one line of symmetry
-
-            // if orientation == 1, it will have the shape: /___\
-            // if orientation == 2, it will have the shape: /___\ rotated 90 degrees anticlockwise
-            // if orientation == 3, it will have the shape: /___\ rotated 180 degrees
-            // if orientation == 4, it will have the shape: /___\ rotated 90 degrees clockwise
-
             if (orientation < 1 | orientation > 4)
             {
                 throw new ArgumentException("orientation must be between 1 and 4 inclusive");
@@ -252,14 +281,14 @@ namespace PoolGame
             switch (orientation)
             {
                 case 1:
-                    trapeziumTexture = new(graphicsDevice, length, width); // empty texture the size of the trapezium
+                    trapeziumTexture = new(GraphicsDevice, length, width); // empty texture the size of the trapezium
                     for (int column = 0; column < length; column++)
                     {
                         for (int row = 0; row < width; row++)
                         {
                             if ((column >= width - row) & (column <= length - (width - row)))
                             {
-                                pixelColours[column + (row * length)] = colour;
+                                pixelColours[column + (row * length)] = textureColour;
                             }
                             else
                             {
@@ -269,7 +298,7 @@ namespace PoolGame
                     }
                     break;
                 case 2:
-                    trapeziumTexture = new(graphicsDevice, width, length); // empty texture the size of the trapezium
+                    trapeziumTexture = new(GraphicsDevice, width, length); // empty texture the size of the trapezium
                     for (int row = 0; row < length; row++)
                     {
                         for (int column = 0; column < width; column++)
@@ -278,7 +307,7 @@ namespace PoolGame
                             {
                                 if (column >= width - row)
                                 {
-                                    pixelColours[column + (row * width)] = colour;
+                                    pixelColours[column + (row * width)] = textureColour;
                                 }
                                 else
                                 {
@@ -289,7 +318,7 @@ namespace PoolGame
                             {
                                 if (column >= row - (length - width))
                                 {
-                                    pixelColours[column + (row * width)] = colour;
+                                    pixelColours[column + (row * width)] = textureColour;
                                 }
                                 else
                                 {
@@ -298,20 +327,20 @@ namespace PoolGame
                             }
                             else // middle section
                             {
-                                pixelColours[column + (row * width)] = colour;
+                                pixelColours[column + (row * width)] = textureColour;
                             }
                         }
                     }
                     break;
                 case 3:
-                    trapeziumTexture = new(graphicsDevice, length, width); // empty texture the size of the trapezium
+                    trapeziumTexture = new(GraphicsDevice, length, width); // empty texture the size of the trapezium
                     for (int column = 0; column < length; column++)
                     {
                         for (int row = 0; row < width; row++)
                         {
                             if ((column >= row) & (column <= length - row))
                             {
-                                pixelColours[column + (row * length)] = colour;
+                                pixelColours[column + (row * length)] = textureColour;
                             }
                             else
                             {
@@ -321,7 +350,7 @@ namespace PoolGame
                     }
                     break;
                 case 4:
-                    trapeziumTexture = new(graphicsDevice, width, length); // empty texture the size of the trapezium
+                    trapeziumTexture = new(GraphicsDevice, width, length); // empty texture the size of the trapezium
                     for (int row = 0; row < length; row++)
                     {
                         for (int column = 0; column < width; column++)
@@ -330,7 +359,7 @@ namespace PoolGame
                             {
                                 if (column <= row)
                                 {
-                                    pixelColours[column + (row * width)] = colour;
+                                    pixelColours[column + (row * width)] = textureColour;
                                 }
                                 else
                                 {
@@ -341,7 +370,7 @@ namespace PoolGame
                             {
                                 if (column <= length - row)
                                 {
-                                    pixelColours[column + (row * width)] = colour;
+                                    pixelColours[column + (row * width)] = textureColour;
                                 }
                                 else
                                 {
@@ -350,7 +379,7 @@ namespace PoolGame
                             }
                             else // middle section
                             {
-                                pixelColours[column + (row * width)] = colour;
+                                pixelColours[column + (row * width)] = textureColour;
                             }
                         }
                     }
@@ -364,14 +393,24 @@ namespace PoolGame
             return trapeziumTexture;
         }
 
-        private Texture2D CreateRightAngledTriangleTexture(GraphicsDevice graphicsDevice, int sideLength, Color colour, int orientation)
+        /// <summary>
+        /// Creates a right-angles triangle texture with two equal-length sides and a specified side length and colour.
+        /// Its sides with be parallel to the vertical and horizonal, and 45 degrees from either the vertical or horizontal.
+        /// (e.g. if orientation == 1, it will look like: ◢)
+        /// </summary>
+        /// <param name="orientation">
+        /// <para>if orientation == 1, it will look like: ◢</para>
+        /// <para>if orientation == 2, it will look like: ◥</para>
+        /// <para>if orientation == 3, it will look like: ◤</para>
+        /// <para>if orientation == 4, it will look like: ◣</para>
+        /// </param>
+        /// <param name="sideLength">The length of the triangle's two perpendicular</param>
+        /// <returns>The triangle texture.</returns>
+        /// <remarks>This is relatively intensive since it iterates through an array whose size is the number of pixels in the texture (e.g. size 2500 for a sideLength of 50px), but it's only called a few times and only during <see cref="Initialize"/> so it shouldn't notably impact performance.</remarks>
+        private Texture2D CreateRightAngledTriangleTexture(int sideLength, Color textureColour, int orientation)
         {
-            // if orientation == 1, it will have the shape: '/|'
-            // if orientation == 2, it will have the shape: '\|' ('/|' rotated 90 degrees anticlockwise)
-            // if orientation == 3, it will have the shape: '|/' ('/|' rotated 180 degrees)
-            // if orientation == 4, it will have the shape: '|\' ('/|' rotated 90 degrees clockwise)
 
-            Texture2D lineTexture = new(graphicsDevice, sideLength, sideLength); // empty texture the size of the line
+            Texture2D lineTexture = new(GraphicsDevice, sideLength, sideLength); // empty texture the size of the line
             Color[] pixelColours = new Color[sideLength * sideLength];
 
             switch (orientation)
@@ -383,7 +422,7 @@ namespace PoolGame
                         {
                             if (column >= sideLength - row)
                             {
-                                pixelColours[column + (row * sideLength)] = colour;
+                                pixelColours[column + (row * sideLength)] = textureColour;
                             }
                             else
                             {
@@ -399,7 +438,7 @@ namespace PoolGame
                         {
                             if (column >= row)
                             {
-                                pixelColours[column + (row * sideLength)] = colour;
+                                pixelColours[column + (row * sideLength)] = textureColour;
                             }
                             else
                             {
@@ -415,7 +454,7 @@ namespace PoolGame
                         {
                             if (column <= sideLength - row)
                             {
-                                pixelColours[column + (row * sideLength)] = colour;
+                                pixelColours[column + (row * sideLength)] = textureColour;
                             }
                             else
                             {
@@ -431,7 +470,7 @@ namespace PoolGame
                         {
                             if (column <= row)
                             {
-                                pixelColours[column + (row * sideLength)] = colour;
+                                pixelColours[column + (row * sideLength)] = textureColour;
                             }
                             else
                             {
@@ -446,6 +485,10 @@ namespace PoolGame
             return lineTexture;
         }
 
+        /// <summary>
+        /// Called once when <see cref="Game.Run"/> is called.
+        /// Handles initialisation logic, loads any non-graphical resources, and calls <see cref="LoadContent"/>
+        /// </summary>
         protected override void Initialize()
         {
             previousKeyboardState = Keyboard.GetState(); // getting the starting state of the keyboard, so that fullscreen can be used
@@ -454,6 +497,10 @@ namespace PoolGame
             base.Initialize();
         }
 
+        /// <summary>
+        /// Called once when <see cref="Game.Run"/> is called.
+        /// Loads anything not loaded by <see cref="LoadContent"/>
+        /// </summary>
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -514,14 +561,14 @@ namespace PoolGame
 
             // PoolBalls:
 
-            cueBallTexture = CreateBlockColouredCircleTexture(GraphicsDevice, poolBallRadius, Color.White);
+            cueBallTexture = CreateBlockColouredCircleTexture(poolBallRadius, Color.White);
             _cueBall = new(cueBallTexture, poolBallRadius);
 
-            eightBallTexture = CreateBlockColouredCircleTexture(GraphicsDevice, poolBallRadius, Color.Black);
+            eightBallTexture = CreateBlockColouredCircleTexture(poolBallRadius, Color.Black);
             _eightBall = new(eightBallTexture, poolBallRadius);
 
-            solidObjectBallTexture = CreateBlockColouredCircleTexture(GraphicsDevice, poolBallRadius, Color.Yellow);
-            stripedObjectBallTexture = CreateBlockColouredCircleTexture(GraphicsDevice, poolBallRadius, Color.Red);
+            solidObjectBallTexture = CreateBlockColouredCircleTexture(poolBallRadius, Color.Yellow);
+            stripedObjectBallTexture = CreateBlockColouredCircleTexture(poolBallRadius, Color.Red);
 
             const int spacing = 3; // to reduce messy collisions
 
@@ -562,7 +609,7 @@ namespace PoolGame
             //pocketRadius
             //tablePocketSpacing
 
-            pocketTexture = CreateBlockColouredCircleTexture(GraphicsDevice, pocketRadius, Color.Black);
+            pocketTexture = CreateBlockColouredCircleTexture(pocketRadius, Color.Black);
             _pocketTopLeft = new Pocket(pocketTexture, new Vector2(pocketRadius + tablePocketSpacing, pocketRadius + tablePocketSpacing), pocketRadius);
             _pocketTopMiddle = new Pocket(pocketTexture, new Vector2(windowWidth / 2, pocketRadius + tablePocketSpacing), pocketRadius);
             _pocketTopRight = new Pocket(pocketTexture, new Vector2(windowWidth - pocketRadius - tablePocketSpacing, pocketRadius + tablePocketSpacing), pocketRadius);
@@ -584,17 +631,17 @@ namespace PoolGame
             int topBottomLeftCushionCentreX = (int)(((windowWidth / 2) + tablePocketSpacing + (sqrt_2 * pocketRadius)) / 2);
             int topBottomRightCushionCentreX = windowWidth - topBottomLeftCushionCentreX;
 
-            cushionTopTexture = CreateTrapeziumTexture(GraphicsDevice, topBottomCushionLength, cushionWidth, cushionColor, 3);
+            cushionTopTexture = CreateTrapeziumTexture(topBottomCushionLength, cushionWidth, cushionColor, 3);
             _cushionTopLeft = new(cushionTopTexture, new Vector2(topBottomLeftCushionCentreX, cushionWidth / 2), topBottomCushionLength, cushionWidth, 3);
             _cushionTopRight = new(cushionTopTexture, new Vector2(topBottomRightCushionCentreX, cushionWidth / 2), topBottomCushionLength, cushionWidth, 3);
 
-            cushionMddleLeftTexture = CreateTrapeziumTexture(GraphicsDevice, middleCushionLength, cushionWidth, cushionColor, 4);
+            cushionMddleLeftTexture = CreateTrapeziumTexture(middleCushionLength, cushionWidth, cushionColor, 4);
             _cushionMiddleLeft = new(cushionMddleLeftTexture, new Vector2(cushionWidth / 2, windowHeight / 2), middleCushionLength, cushionWidth, 4);
 
-            cushionMddleRightTexture = CreateTrapeziumTexture(GraphicsDevice, middleCushionLength, cushionWidth, cushionColor, 2);
+            cushionMddleRightTexture = CreateTrapeziumTexture(middleCushionLength, cushionWidth, cushionColor, 2);
             _cushionMiddleRight = new(cushionMddleRightTexture, new Vector2(windowWidth - (cushionWidth / 2), windowHeight / 2), middleCushionLength, cushionWidth, 2);
 
-            cushionBottomTexture = CreateTrapeziumTexture(GraphicsDevice, topBottomCushionLength, cushionWidth, cushionColor, 1);
+            cushionBottomTexture = CreateTrapeziumTexture(topBottomCushionLength, cushionWidth, cushionColor, 1);
             _cushionBottomLeft = new(cushionBottomTexture, new Vector2(topBottomLeftCushionCentreX, windowHeight - (cushionWidth / 2)), topBottomCushionLength, cushionWidth, 1);
             _cushionBottomRight = new(cushionBottomTexture, new Vector2(topBottomRightCushionCentreX, windowHeight - (cushionWidth / 2)), topBottomCushionLength, cushionWidth, 1);
 
@@ -604,22 +651,22 @@ namespace PoolGame
 
             // triangles fill in the rest of the sides, they don't need collisions because they are always behind pockets:
 
-            bottomRightTriangleTexture = CreateRightAngledTriangleTexture(GraphicsDevice, 2 * (pocketRadius + tablePocketSpacing), cushionColor, 1);
+            bottomRightTriangleTexture = CreateRightAngledTriangleTexture(2 * (pocketRadius + tablePocketSpacing), cushionColor, 1);
             bottomRightTriangle = new(bottomRightTriangleTexture, new Vector2(windowWidth - (pocketRadius + tablePocketSpacing), windowHeight - (pocketRadius + tablePocketSpacing)));
 
-            topLeftTriangleTexture = CreateRightAngledTriangleTexture(GraphicsDevice, 2 * (pocketRadius + tablePocketSpacing), cushionColor, 2);
+            topLeftTriangleTexture = CreateRightAngledTriangleTexture(2 * (pocketRadius + tablePocketSpacing), cushionColor, 2);
             topLeftTriangle = new(topLeftTriangleTexture, new Vector2(windowWidth - (pocketRadius + tablePocketSpacing), pocketRadius + tablePocketSpacing));
 
-            topRightTriangleTexture = CreateRightAngledTriangleTexture(GraphicsDevice, 2 * (pocketRadius + tablePocketSpacing), cushionColor, 3);
+            topRightTriangleTexture = CreateRightAngledTriangleTexture(2 * (pocketRadius + tablePocketSpacing), cushionColor, 3);
             topRightTriangle = new(topRightTriangleTexture, new Vector2(pocketRadius + tablePocketSpacing, pocketRadius + tablePocketSpacing));
 
-            bottomLeftTriangleTexture = CreateRightAngledTriangleTexture(GraphicsDevice, 2 * (pocketRadius + tablePocketSpacing), cushionColor, 4);
+            bottomLeftTriangleTexture = CreateRightAngledTriangleTexture(2 * (pocketRadius + tablePocketSpacing), cushionColor, 4);
             bottomLeftTriangle = new(bottomLeftTriangleTexture, new Vector2(pocketRadius + tablePocketSpacing, windowHeight - (pocketRadius + tablePocketSpacing)));
 
 
             // misc. sprites:
 
-            baulkLineTexture = CreateVerticalLineTexture(GraphicsDevice, windowHeight - (4 * pocketRadius) - (2 * tablePocketSpacing), 3, Color.Black);
+            baulkLineTexture = CreateVerticalLineTexture(windowHeight - (4 * pocketRadius) - (2 * tablePocketSpacing), 3, Color.Black);
             int baulkLineCentreX = (windowWidth + (6 * pocketRadius) + (3 * tablePocketSpacing)) / 5; // 1/5th across the playing surface (not 1/5th across entire table)
             baulkLine = new(baulkLineTexture, new Vector2(baulkLineCentreX, windowHeight / 2));
 
@@ -630,6 +677,7 @@ namespace PoolGame
 
             base.LoadContent();
         }
+
 
         protected override void Update(GameTime gameTime)
         {

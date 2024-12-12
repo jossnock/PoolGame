@@ -15,8 +15,8 @@ namespace PoolGame.Classes
 
         public override void Update(GameTime gameTime)
         {
-            // Pocket-PoolBall collisions before PoolBall-PoolBall collisions because deleting is less intensive than calculating all collisions
-            // and, if a PoolBall is deleted, less collision work needs to be done
+            // Pocket-PoolBall collisions before PoolBall-PoolBall collisions because deleting is less intensive than calculating all collision trajectories
+            // and if a PoolBall is deleted, less collision work needs to be done
             foreach (Pocket _pocket in Game1.pockets)
             {
                 _pocket.Update(gameTime);
@@ -34,6 +34,8 @@ namespace PoolGame.Classes
             {
                 _cushion.Update(gameTime);
             }
+
+            //[Game1.ReplaceCueBallIfNecessary();]
         }
 
         public override void Draw(GameTime gameTime)
