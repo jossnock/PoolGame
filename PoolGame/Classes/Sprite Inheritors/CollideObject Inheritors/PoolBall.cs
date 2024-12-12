@@ -132,7 +132,7 @@ namespace PoolGame.Classes
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
+            
             DoBoundsCollision();
 
             DoFriction();

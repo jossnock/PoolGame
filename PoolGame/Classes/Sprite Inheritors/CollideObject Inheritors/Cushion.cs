@@ -35,7 +35,8 @@ namespace PoolGame.Classes
             orientation = _orientation;
         }
 
-        public void DoCollisions()
+        public void DoCollisions() // [todo: add repositioning outside of the hitbox after collisions
+                                   //        add correct corner collisions]
         {
             
             switch (orientation)
