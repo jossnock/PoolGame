@@ -5,3 +5,9 @@ My writeup for it is attached to this repository under the name 'Computer Scienc
 
 The premise of PoolGame is pool but for 2+ players so that larger groups can play. 
 I'm also planning on implementing other features (e.g. obstacles, multiple cue balls), for more details, see my attached writeup.
+
+## Tools, Frameworks, and Libraries
+- **C# (.NET [version])** - Language used for coding the application.
+- **Visual Studio 2022** - Integrated development environment used for writing, debugging, and compiling the code.
+- **MonoGame** - The framework providing the structure of the game.
+- **Myra** - The UI library used for creating some of the game's graphical user interface.
