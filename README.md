@@ -6,7 +6,7 @@ The premise of PoolGame is pool but for 2+ players so that larger groups can pla
 I'm also planning on implementing other features (e.g. obstacles, multiple cue balls). For more details, see my attached writeup.
 
 ## Tools, Frameworks, and Libraries used
-- **C#** - The language used for coding the application. It's built for the .NET framwork.
+- [**C#**](https://learn.microsoft.com/en-us/dotnet/csharp/) - The primary programming language built for the .NET Framework, used for coding PoolGame.
 - [**Visual Studio 2022**](https://visualstudio.microsoft.com/vs/) - The integrated development environment used for writing, debugging, and compiling the code.
-- [**MonoGame**](https://monogame.net) - The framework providing the structure and tools for developing the game. It's based on the Microsoft XNA Framework.
-- [**Myra**](https://github.com/rds1983/Myra) - The UI library used for creating some of the game's graphical user interface. It's built for MonoGame, FNA, and Stride.
+- [**MonoGame**](https://monogame.net) - An open-source framework based on the Microsoft XNA Framework, providing the structure and tools for developing the game.
+- [**Myra**](https://github.com/rds1983/Myra) - A UI library used for creating parts of the game's graphical user interface. It supports for MonoGame, FNA, and Stride.
