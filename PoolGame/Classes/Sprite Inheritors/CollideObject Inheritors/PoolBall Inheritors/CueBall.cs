@@ -46,7 +46,7 @@ namespace PoolGame.Classes
             if (!isPotted) // can only move when not potted
             {
                 if ((Mouse.GetState().LeftButton == ButtonState.Pressed)
-                  & (Game1.IsAllStationary() == true)) // only allowed to shoot again when everything is stationary
+                  & (Match.IsAllStationary() == true)) // only allowed to shoot again when everything is stationary
                                                        // [todo: keep in window]: & )currentMousePosition.X > 0 & currentMousePosition.X < Game1.windowWidth & currentMousePosition.Y > 0 & currentMousePosition.Y < Game1.windowHeight)
                 {
                     Shoot(currentMousePosition);
@@ -58,7 +58,7 @@ namespace PoolGame.Classes
                 }
             }
 
-            if (isPotted & Game1.IsAllStationary() & (Mouse.GetState().LeftButton == ButtonState.Pressed)) // replace cue ball after the table is stationary and LMB is pressed
+            if (isPotted & Match.IsAllStationary() & (Mouse.GetState().LeftButton == ButtonState.Pressed)) // replace cue ball after the table is stationary and LMB is pressed
             {
                 int cueBallCentreX = (Game1.windowWidth + (6 * Game1.pocketRadius) + (3 * Game1.tablePocketSpacing)) / 5; // 1/5th across the playing surface (not 1/5th across entire table)
                 Vector2 inputPosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
