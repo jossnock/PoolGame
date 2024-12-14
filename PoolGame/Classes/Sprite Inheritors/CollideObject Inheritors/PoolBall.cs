@@ -28,14 +28,14 @@ namespace PoolGame.Classes
         {
             acceleration = Vector2.Zero;
             position = initialPosition;
-            radius = Game1.poolBallRadius;
+            radius = Match.poolBallRadius;
         }
 
         public PoolBall(Texture2D texture, float radius) : base(texture, radius) // allowing CueBall to have a constructor that doesn't need initialPosition
         {
             acceleration = Vector2.Zero;
             position = Vector2.Zero;
-            radius = Game1.poolBallRadius;
+            radius = Match.poolBallRadius;
         }
 
         public void DoFriction()
