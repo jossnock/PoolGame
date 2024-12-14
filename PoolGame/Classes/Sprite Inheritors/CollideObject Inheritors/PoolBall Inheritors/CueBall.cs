@@ -17,7 +17,7 @@ namespace PoolGame.Classes
         public CueBall(Texture2D texture, float radius) : base(texture, radius)
         {
             acceleration = Vector2.Zero;
-            int cueBallCentreX = (Game1.windowWidth + (6 * Game1.pocketRadius) + (3 * Game1.tablePocketSpacing)) / 5; // 1/5th across the playing surface (not 1/5th across entire table)
+            int cueBallCentreX = (Game1.windowWidth + (6 * Match.pocketRadius) + (3 * Match.tablePocketSpacing)) / 5; // 1/5th across the playing surface (not 1/5th across entire table)
             position = new Vector2(cueBallCentreX, Game1.windowHeight / 2);
             isPotted = false;
         }
@@ -46,8 +46,8 @@ namespace PoolGame.Classes
             if (!isPotted) // can only move when not potted
             {
                 if ((Mouse.GetState().LeftButton == ButtonState.Pressed)
-                  & (Match.IsAllStationary() == true)) // only allowed to shoot again when everything is stationary
-                                                       // [todo: keep in window]: & )currentMousePosition.X > 0 & currentMousePosition.X < Game1.windowWidth & currentMousePosition.Y > 0 & currentMousePosition.Y < Game1.windowHeight)
+                  && (Match.IsAllStationary() == true)) // only allowed to shoot again when everything is stationary
+                                                       // [todo: keep in window]: && )currentMousePosition.X > 0 && currentMousePosition.X < Game1.windowWidth && currentMousePosition.Y > 0 && currentMousePosition.Y < Game1.windowHeight)
                 {
                     Shoot(currentMousePosition);
                 };
@@ -58,22 +58,22 @@ namespace PoolGame.Classes
                 }
             }
 
-            if (isPotted & Match.IsAllStationary() & (Mouse.GetState().LeftButton == ButtonState.Pressed)) // replace cue ball after the table is stationary and LMB is pressed
+            if (isPotted && Match.IsAllStationary() && (Mouse.GetState().LeftButton == ButtonState.Pressed)) // replace cue ball after the table is stationary and LMB is pressed
             {
-                int cueBallCentreX = (Game1.windowWidth + (6 * Game1.pocketRadius) + (3 * Game1.tablePocketSpacing)) / 5; // 1/5th across the playing surface (not 1/5th across entire table)
+                int cueBallCentreX = (Game1.windowWidth + (6 * Match.pocketRadius) + (3 * Match.tablePocketSpacing)) / 5; // 1/5th across the playing surface (not 1/5th across entire table)
                 Vector2 inputPosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
 
                 // checking if it's in the left-most 5th of the board
-                if ((inputPosition.X > (2 * Game1.pocketRadius) + Game1.tablePocketSpacing)
-                  & (inputPosition.X < (Game1.windowWidth + (6 * Game1.pocketRadius) + (3 * Game1.tablePocketSpacing)) / 5)
-                  & (inputPosition.Y > (2 * Game1.pocketRadius) + Game1.tablePocketSpacing)
-                  & (inputPosition.Y < Game1.windowHeight - ((2 * Game1.pocketRadius) + Game1.tablePocketSpacing)))
+                if ((inputPosition.X > (2 * Match.pocketRadius) + Match.tablePocketSpacing)
+                  && (inputPosition.X < (Game1.windowWidth + (6 * Match.pocketRadius) + (3 * Match.tablePocketSpacing)) / 5)
+                  && (inputPosition.Y > (2 * Match.pocketRadius) + Match.tablePocketSpacing)
+                  && (inputPosition.Y < Game1.windowHeight - ((2 * Match.pocketRadius) + Match.tablePocketSpacing)))
                 {
                     // checking if it would be inside of another PoolBall:
                     bool isColliding = false;
-                    for (int i = 1; i < Game1.poolBalls.Count; i++) // starting at i = 1 skips the cue ball from checking itself
+                    for (int i = 1; i < Match.poolBalls.Count; i++) // starting at i = 1 skips the cue ball from checking itself
                     {
-                        if (Vector2.Distance(inputPosition, Game1.poolBalls[i].position) < radius * 2) 
+                        if (Vector2.Distance(inputPosition, Match.poolBalls[i].position) < radius * 2) 
                         {
                             isColliding = true;
                             break; // once one is colliding, there's no point checking any more
