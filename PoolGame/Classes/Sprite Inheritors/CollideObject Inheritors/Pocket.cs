@@ -9,14 +9,13 @@ using Microsoft.Xna.Framework.Input;
 
 namespace PoolGame.Classes
 {
-    public class Pocket : CollideObject
+    public class Pocket : CircleSprite
     {
         public Pocket(Texture2D _texture, Vector2 _position, float _radius) : base(_texture, _position, _radius)
         {
             texture = _texture;
             position = _position;
             radius = _radius;
-            Type = ObjectType.Circle;
         }
 
         public void DoCollisions()

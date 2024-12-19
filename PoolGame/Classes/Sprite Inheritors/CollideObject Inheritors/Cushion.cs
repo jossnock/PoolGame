@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PoolGame.Classes
 {
-    public class Cushion : CollideObject
+    public class Cushion : Sprite
     {
         // for cushions in the shape of trapeziums with only horizontal, vertical, and diagonal edges and one line of symmetry
         // (technically the long side of the trapezium doesn't have collisions because it doesn't need them
@@ -21,7 +21,7 @@ namespace PoolGame.Classes
         // if orientation == 3, it will have the shape: /___\ rotated 180 degrees
         // if orientation == 4, it will have the shape: /___\ rotated 90 degrees clockwise
 
-        public Cushion(Texture2D _texture, Vector2 _position, int _length, int _width, int _orientation) : base(_texture, _position, _orientation)
+        public Cushion(Texture2D _texture, Vector2 _position, int _length, int _width, int _orientation) : base()
         {
             if (_orientation < 1 | _orientation > 4)
             {
@@ -51,7 +51,7 @@ namespace PoolGame.Classes
                           & (Match.poolBalls[i].position.Y + Match.poolBalls[i].radius > position.Y - (width / 2))) // if it's below the top side of the trapezium
                         {
                             Match.poolBalls[i].position = new Vector2(Match.poolBalls[i].position.X, position.Y - Match.poolBalls[i].radius - (width / 2)); // places it outside of hitbox
-                            Match.poolBalls[i].velocity = new Vector2(Match.poolBalls[i].velocity.X, -Match.poolBalls[i].velocity.Y); // reflected horizontally
+                            Match.poolBalls[i].velocity = PoolBall.poolBallCushionCoefficientOfRestitution * (new Vector2(Match.poolBalls[i].velocity.X, -Match.poolBalls[i].velocity.Y)); // reflected horizontally, accounting for energy lost during collision
                         }
 
                         // left triangle:
@@ -60,7 +60,7 @@ namespace PoolGame.Classes
                           & (Math.Abs(((position.X + position.Y) - (Match.poolBalls[i].position.X + Match.poolBalls[i].position.Y) + (0.5 * (width - length)))) / Match.sqrt_2 < Match.poolBalls[i].radius))
                         {
                             // [todo: add repositioning]: Match.poolBalls[i].position = new Vector2(); // places it outside of hitbox
-                            Match.poolBalls[i].velocity = new Vector2(-Match.poolBalls[i].velocity.Y, -Match.poolBalls[i].velocity.X); // reflected
+                            Match.poolBalls[i].velocity = PoolBall.poolBallCushionCoefficientOfRestitution * (new Vector2(-Match.poolBalls[i].velocity.Y, -Match.poolBalls[i].velocity.X)); // reflected, accounting for energy lost during collision
                         }
 
                         // right triangle:
@@ -69,12 +69,14 @@ namespace PoolGame.Classes
                           & (Math.Abs(((position.Y - position.X) + (Match.poolBalls[i].position.X - Match.poolBalls[i].position.Y) + (0.5 * (width - length)))) / Match.sqrt_2 < Match.poolBalls[i].radius))
                         {
                             // [todo: add repositioning]: Match.poolBalls[i].position = new Vector2(); // places it outside of hitbox
-                            Match.poolBalls[i].velocity = new Vector2(Match.poolBalls[i].velocity.Y, Match.poolBalls[i].velocity.X); // reflected
+                            Match.poolBalls[i].velocity = PoolBall.poolBallCushionCoefficientOfRestitution * (new Vector2(Match.poolBalls[i].velocity.Y, Match.poolBalls[i].velocity.X)); // reflected, accounting for energy lost during collision
                         }
 
                         // left corner:
 
                         // right corner:
+
+                        
                     }
                     break;
                 case 2:
@@ -86,7 +88,7 @@ namespace PoolGame.Classes
                           & (Math.Abs(((position.X - position.Y) + (Match.poolBalls[i].position.Y - Match.poolBalls[i].position.X) + (0.5 * (width - length)))) / Match.sqrt_2 < Match.poolBalls[i].radius))
                         {
                             // [todo: add repositioning]: Match.poolBalls[i].position = new Vector2(); // places it outside of hitbox
-                            Match.poolBalls[i].velocity = new Vector2(Match.poolBalls[i].velocity.Y, Match.poolBalls[i].velocity.X); // reflected
+                            Match.poolBalls[i].velocity = PoolBall.poolBallCushionCoefficientOfRestitution * (new Vector2(Match.poolBalls[i].velocity.Y, Match.poolBalls[i].velocity.X)); // reflected, accounting for energy lost during collision
                         }
 
                         // right triangle:
@@ -95,7 +97,7 @@ namespace PoolGame.Classes
                           & (Math.Abs(((position.X + position.Y) - (Match.poolBalls[i].position.Y + Match.poolBalls[i].position.X) + (0.5 * (width - length)))) / Match.sqrt_2 < Match.poolBalls[i].radius))
                         {
                             // [todo: add repositioning]: Match.poolBalls[i].position = new Vector2(); // places it outside of hitbox
-                            Match.poolBalls[i].velocity = new Vector2(-Match.poolBalls[i].velocity.Y, -Match.poolBalls[i].velocity.X); // reflected
+                            Match.poolBalls[i].velocity = PoolBall.poolBallCushionCoefficientOfRestitution * (new Vector2(-Match.poolBalls[i].velocity.Y, -Match.poolBalls[i].velocity.X)); // reflected, accounting for energy lost during collision
                         }
 
                         // middle:
@@ -104,7 +106,7 @@ namespace PoolGame.Classes
                           & (Match.poolBalls[i].position.X + Match.poolBalls[i].radius > position.X - (width / 2)))
                         {
                             Match.poolBalls[i].position = new Vector2(position.X - Match.poolBalls[i].radius - (width / 2), Match.poolBalls[i].position.Y); // places it outside of hitbox
-                            Match.poolBalls[i].velocity = new Vector2(-Match.poolBalls[i].velocity.X, Match.poolBalls[i].velocity.Y); // reflected vertically
+                            Match.poolBalls[i].velocity = PoolBall.poolBallCushionCoefficientOfRestitution * (new Vector2(-Match.poolBalls[i].velocity.X, Match.poolBalls[i].velocity.Y)); // reflected vertically, accounting for energy lost during collision
                         }
 
                         // left corner:
@@ -121,7 +123,7 @@ namespace PoolGame.Classes
                           & (Match.poolBalls[i].position.Y - Match.poolBalls[i].radius < position.Y + (width / 2)))
                         {
                             Match.poolBalls[i].position = new Vector2(Match.poolBalls[i].position.X, position.Y + Match.poolBalls[i].radius + (width / 2)); // places it outside of hitbox
-                            Match.poolBalls[i].velocity = new Vector2(Match.poolBalls[i].velocity.X, -Match.poolBalls[i].velocity.Y); // reflected horizontally
+                            Match.poolBalls[i].velocity = PoolBall.poolBallCushionCoefficientOfRestitution * (new Vector2(Match.poolBalls[i].velocity.X, -Match.poolBalls[i].velocity.Y)); // reflected horizontally, accounting for energy lost during collision
                         }
 
                         // left triangle:
@@ -130,7 +132,7 @@ namespace PoolGame.Classes
                           & (Math.Abs(((position.X + position.Y) - (Match.poolBalls[i].position.X + Match.poolBalls[i].position.Y) + (0.5 * (length - width)))) / Match.sqrt_2 < Match.poolBalls[i].radius))
                         {
                             // [todo: add repositioning]: Match.poolBalls[i].position = new Vector2(); // places it outside of hitbox
-                            Match.poolBalls[i].velocity = new Vector2(-Match.poolBalls[i].velocity.Y, -Match.poolBalls[i].velocity.X); // reflected
+                            Match.poolBalls[i].velocity = PoolBall.poolBallCushionCoefficientOfRestitution * (new Vector2(-Match.poolBalls[i].velocity.Y, -Match.poolBalls[i].velocity.X)); // reflected, accounting for energy lost during collision
                         }
 
                         // right triangle:
@@ -139,7 +141,7 @@ namespace PoolGame.Classes
                           & (Math.Abs(((position.X - position.Y) + (Match.poolBalls[i].position.Y - Match.poolBalls[i].position.X) + (0.5 * (width - length)))) / Match.sqrt_2 < Match.poolBalls[i].radius))
                         {
                             // [todo: add repositioning]: Match.poolBalls[i].position = new Vector2(); // places it outside of hitbox
-                            Match.poolBalls[i].velocity = new Vector2(Match.poolBalls[i].velocity.Y, Match.poolBalls[i].velocity.X); // reflected
+                            Match.poolBalls[i].velocity = PoolBall.poolBallCushionCoefficientOfRestitution * (new Vector2(Match.poolBalls[i].velocity.Y, Match.poolBalls[i].velocity.X)); // reflected, accounting for energy lost during collision
                         }
 
                         // left corner:
@@ -156,7 +158,7 @@ namespace PoolGame.Classes
                           & (Math.Abs(((position.X - position.Y) + (Match.poolBalls[i].position.Y - Match.poolBalls[i].position.X) + (0.5 * (length - width)))) / Match.sqrt_2 < Match.poolBalls[i].radius))
                         {
                             // [todo: add repositioning]: Match.poolBalls[i].position = new Vector2(); // places it outside of hitbox
-                            Match.poolBalls[i].velocity = new Vector2(Match.poolBalls[i].velocity.Y, Match.poolBalls[i].velocity.X); // reflected
+                            Match.poolBalls[i].velocity = PoolBall.poolBallCushionCoefficientOfRestitution * (new Vector2(Match.poolBalls[i].velocity.Y, Match.poolBalls[i].velocity.X)); // reflected, accounting for energy lost during collision
                         }
 
                         // right triangle:
@@ -165,7 +167,7 @@ namespace PoolGame.Classes
                           & (Math.Abs(((position.X + position.Y) - (Match.poolBalls[i].position.Y + Match.poolBalls[i].position.X) + (0.5 * (length - width)))) / Match.sqrt_2 < Match.poolBalls[i].radius))
                         {
                             // [todo: add repositioning]: Match.poolBalls[i].position = new Vector2(); // places it outside of hitbox
-                            Match.poolBalls[i].velocity = new Vector2(-Match.poolBalls[i].velocity.Y, -Match.poolBalls[i].velocity.X); // reflected
+                            Match.poolBalls[i].velocity = PoolBall.poolBallCushionCoefficientOfRestitution * (new Vector2(-Match.poolBalls[i].velocity.Y, -Match.poolBalls[i].velocity.X)); // reflected, accounting for energy lost during collision
                         }
 
                         // middle:
@@ -174,14 +176,15 @@ namespace PoolGame.Classes
                           & (Match.poolBalls[i].position.X - Match.poolBalls[i].radius < position.X + (width / 2)))
                         {
                             Match.poolBalls[i].position = new Vector2(position.X + Match.poolBalls[i].radius + (width / 2), Match.poolBalls[i].position.Y); // places it outside of hitbox
-                            Match.poolBalls[i].velocity = new Vector2(-Match.poolBalls[i].velocity.X, Match.poolBalls[i].velocity.Y); // reflected vertically
+                            Match.poolBalls[i].velocity = PoolBall.poolBallCushionCoefficientOfRestitution * (new Vector2(-Match.poolBalls[i].velocity.X, Match.poolBalls[i].velocity.Y)); // reflected vertically, accounting for energy lost during collision
                         }
 
                         // left corner:
 
                         // right corner:
-                }
-                break;
+                        
+                    }
+                    break;
             }
         }
 

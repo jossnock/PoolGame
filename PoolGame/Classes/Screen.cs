@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
-using System.Net.Sockets;
 
 namespace PoolGame.Classes
 {
@@ -11,6 +9,12 @@ namespace PoolGame.Classes
     public abstract class Screen
     {
         public Color backgroundColor;
+
+        /// <summary>
+        /// Loads the initial content for the current screen (determined by <see cref="Game1.ScreenState"/>).
+        /// </summary>
+        /// <remarks>All overrides are called by <see cref="Game1.LoadContent"/> (1 time on startup) and whenever the screen state.</remarks>
+        public abstract void LoadInitialContent(GraphicsDevice graphicsDevice);
 
         /// <summary>
         /// Updates the game by (when specified) recieving input, altering attributes, and calling methods.
@@ -23,11 +27,5 @@ namespace PoolGame.Classes
         /// </summary>
         /// <remarks>Called by <see cref="Game1.Draw"/> (1 time every frame) when this is the active screen.</remarks>
         public abstract void Draw(GameTime gameTime);
-
-        /// <summary>
-        /// Loads the initial content for the current screen (determined by <see cref="Game1.ScreenState"/>).
-        /// </summary>
-        /// <remarks>All overrides are called by <see cref="Game1.LoadContent"/> (1 time on startup) and whenever the screen state.</remarks>
-        public abstract void LoadInitialContent(GraphicsDevice graphicsDevice);
     }
 }
