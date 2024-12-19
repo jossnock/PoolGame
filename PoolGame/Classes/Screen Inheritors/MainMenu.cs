@@ -24,8 +24,6 @@ namespace PoolGame.Classes
 
         public Color textColor;
 
-        
-
         public MainMenu() 
         {
             backgroundColor = Color.Gray;

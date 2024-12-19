@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using static PoolGame.Classes.CollideObject;
 
 namespace PoolGame.Classes
 {
@@ -28,11 +27,19 @@ namespace PoolGame.Classes
 
         }
 
+        /// <summary>
+        /// Updates the object by (when specified) recieving input, altering attributes, and calling methods.
+        /// </summary>
+        /// <remarks>Called by <see cref="Match.Update"/> (1 time every frame) when it is the active screen.</remarks>
         public virtual void Update(GameTime gameTime)
         {
 
         }
 
+        /// <summary>
+        /// Draws all active sprites.
+        /// </summary>
+        /// <remarks>Called by <see cref="Match.Draw"/> (1 time every frame) when it is the active screen.</remarks>
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(

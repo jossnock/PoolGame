@@ -17,7 +17,7 @@ namespace PoolGame.Classes
     public class Match : Screen
     {
         // sizing:
-        // using the approx. scale 1cm : 8px
+        // using the approx. scale 1cm : 8px for 1280x720
         public static int poolBallRadius;
         public static int pocketRadius;
         public static int tablePocketSpacing;
@@ -49,7 +49,6 @@ namespace PoolGame.Classes
         public static Texture2D redObjectBallTexture;
 
         public static List<PoolBall> poolBalls; // List (not array) so that PoolBalls can be removed when potted
-
 
         // pockets:
         public static Pocket _pocketTopLeft;
@@ -158,7 +157,6 @@ namespace PoolGame.Classes
             poolBalls = new List<PoolBall> { _cueBall, _eightBall,
                                              _yellowObjectBall1,   _yellowObjectBall2,   _yellowObjectBall3,   _yellowObjectBall4,   _yellowObjectBall5,   _yellowObjectBall6,   _yellowObjectBall7,
                                              _redObjectBall1, _redObjectBall2, _redObjectBall3, _redObjectBall4, _redObjectBall5, _redObjectBall6, _redObjectBall7};
-
 
             // Pockets:
 
@@ -336,8 +334,8 @@ namespace PoolGame.Classes
                             // adjusting velocities:
                             Vector2 newVelocity = poolBalls[i].velocity + (Vector2.Dot(poolBalls[j].velocity - poolBalls[i].velocity, unitNormalVector) * unitNormalVector);
                             Vector2 newOtherVelocity = poolBalls[j].velocity + (Vector2.Dot(poolBalls[i].velocity - poolBalls[j].velocity, unitNormalVector) * unitNormalVector);
-                            poolBalls[j].velocity = newOtherVelocity;
-                            poolBalls[i].velocity = newVelocity;
+                            poolBalls[j].velocity = newOtherVelocity; //* PoolBall.poolBallpoolBallCoefficientOfRestitution;
+                            poolBalls[i].velocity = newVelocity; //* PoolBall.poolBallpoolBallCoefficientOfRestitution;
 
                             // adjusting positions to prevent PoolBalls overlapping and getting stuck inside of each other:
                             poolBalls[j].position += ((0.5f * relativePositionVector.Length()) - poolBalls[i].radius) * unitNormalVector; // moving it half the distance they overlap

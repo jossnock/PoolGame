@@ -14,6 +14,7 @@ namespace PoolGame.Classes
     public class CueBall : PoolBall
     {
         public bool isPotted;
+
         public CueBall(Texture2D texture, float radius) : base(texture, radius)
         {
             acceleration = Vector2.Zero;
@@ -25,7 +26,7 @@ namespace PoolGame.Classes
         public void Shoot(Vector2 mousePosition)
         {
             Vector2 movementVector = mousePosition - position; // calculating the distance between the cue ball and the mouse to form a direction vector
-            velocity += movementVector * VelocityMultiplier;
+            velocity = movementVector * VelocityMultiplier;
         }
 
         /// <summary>
@@ -47,7 +48,7 @@ namespace PoolGame.Classes
             {
                 if ((Mouse.GetState().LeftButton == ButtonState.Pressed)
                   && (Match.IsAllStationary() == true)) // only allowed to shoot again when everything is stationary
-                                                       // [todo: keep in window]: && )currentMousePosition.X > 0 && currentMousePosition.X < Game1.windowWidth && currentMousePosition.Y > 0 && currentMousePosition.Y < Game1.windowHeight)
+                                                        // [todo: keep in window]: && )currentMousePosition.X > 0 && currentMousePosition.X < Game1.windowWidth && currentMousePosition.Y > 0 && currentMousePosition.Y < Game1.windowHeight)
                 {
                     Shoot(currentMousePosition);
                 };
@@ -58,7 +59,8 @@ namespace PoolGame.Classes
                 }
             }
 
-            if (isPotted && Match.IsAllStationary() && (Mouse.GetState().LeftButton == ButtonState.Pressed)) // replace cue ball after the table is stationary and LMB is pressed
+            // replace CueBall after it's potted:
+            if (isPotted && Match.IsAllStationary() && (Mouse.GetState().LeftButton == ButtonState.Pressed)) // after the table is stationary and LMB is pressed
             {
                 int cueBallCentreX = (Game1.windowWidth + (6 * Match.pocketRadius) + (3 * Match.tablePocketSpacing)) / 5; // 1/5th across the playing surface (not 1/5th across entire table)
                 Vector2 inputPosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
@@ -86,6 +88,7 @@ namespace PoolGame.Classes
                     }
                 }
             }
+
         }
 
         public override void Draw(SpriteBatch spriteBatch)
