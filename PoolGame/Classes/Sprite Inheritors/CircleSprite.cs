@@ -8,6 +8,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PoolGame.Classes
 {
+    /// <summary>
+    /// A subclass of <see cref="Sprite"></see>, used for circular sprites.
+    /// </summary>
+    /// <remarks>This exists because multiple different objects need circular sprites, but some don't.</remarks>
     public class CircleSprite : Sprite
     {
         public float radius { get; set; }
@@ -19,8 +23,7 @@ namespace PoolGame.Classes
             radius = _radius;
         }
 
-        // allowing CueBall to have a constructor that doesn't need initialPosition
-        public CircleSprite(Texture2D _texture, float _radius)
+        public CircleSprite(Texture2D _texture, float _radius) // allowing CueBall to have a constructor that doesn't need initialPosition
         {
             texture = _texture;
             position = Vector2.Zero;
@@ -31,11 +34,5 @@ namespace PoolGame.Classes
         {
             base.Update(gameTime);
         }
-
-
-
-
-
-
     }
 }

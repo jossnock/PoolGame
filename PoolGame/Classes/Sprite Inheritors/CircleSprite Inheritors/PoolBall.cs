@@ -46,12 +46,16 @@ namespace PoolGame.Classes
             radius = Match.poolBallRadius;
         }
 
-        public void ApplyRollingResistance() // [todo: separate into 2 methods, one for resistance, one to stop when slow enough]
+        /// <summary>
+        /// Subtracts the PoolBall's decelerationDueToRollingResistance from its velocity, slowing it down by that amount.
+        /// </summary>
+        /// <remarks>This won't decelerate in a direction if the velocity in that direction is zero, otherwise the PoolBall with move backwards after stopping</remarks>
+        public void ApplyRollingResistance()
         {
             // horizontal:
-            if (Math.Abs(velocity.X) > 0) // if x velocity is less than 0,
-                                          // decelerating causes the velocity to change sign,
-                                          // meaning it moves backwards (relative to its original direction) which isn't how friction works
+            if (velocity.X != 0) // if x velocity is 0, decelerating causes the velocity to change sign,
+                                 // meaning it moves backwards (relative to its original direction)
+                                 // which isn't how friction works
             {
                 velocity = new Vector2(velocity.X - decelerationDueToRollingResistance.X, velocity.Y); // decelerating
             }
@@ -61,9 +65,9 @@ namespace PoolGame.Classes
             }
 
             // vertical:
-            if (Math.Abs(velocity.Y) > 0) // if x velocity is less than 0,
-                                          // decelerating causes the velocity to change sign,
-                                          // meaning it moves backwards (relative to its original direction) which isn't how friction works
+            if (velocity.Y != 0) // if x velocity is 0, decelerating causes the velocity to change sign,
+                                 // meaning it moves backwards (relative to its original direction)
+                                 // which isn't how friction works
             {
                 velocity = new Vector2(velocity.X, velocity.Y - decelerationDueToRollingResistance.Y); // decelerating
             }
@@ -74,37 +78,49 @@ namespace PoolGame.Classes
         }
 
         /// <summary>
-        /// If velocity in a certain direction is under a given threshold, the PoolBall will stop moving in that direction.
+        /// If velocity in a certain direction is under a given threshold, the PoolBall will stop moving in that direction and decelerationDueToRollingResistance in that direction is set to 0.
         /// </summary>
+        /// <remarks>This prevents a PoolBall from moving for too long when its really slow, enabling the next round to start faster.</remarks>
         public void StopWhenSlow()
         {
-            // horizontal:
+            // horizontal velocity:
             if (Math.Abs(velocity.X) < ThresholdVelicity)
             {
                 velocity = new Vector2(0, velocity.Y);
-                decelerationDueToRollingResistance = new Vector2(0, decelerationDueToRollingResistance.Y);
+                decelerationDueToRollingResistance = new Vector2(0, decelerationDueToRollingResistance.Y); // setting decelerationDueToRollingResistance.Y to zero to prevent the PoolBall moving backwards when stopped
             }
 
-            // vertical:
+            // vertical velocity:
             if (Math.Abs(velocity.Y) < ThresholdVelicity)
             {
                 velocity = new Vector2(velocity.X, 0);
-                decelerationDueToRollingResistance = new Vector2(decelerationDueToRollingResistance.X, 0);
+                decelerationDueToRollingResistance = new Vector2(decelerationDueToRollingResistance.X, 0); // setting decelerationDueToRollingResistance.X to zero to prevent the PoolBall moving backwards when stopped
             }
         }
 
+        /// <summary>
+        /// Adds the PoolBall's velocity to its position, moving it by that amount.
+        /// </summary>
+        /// <remarks>
+        /// limiting friction = coefficientOfFriction * reaction force.
+        /// Letting mass and gravitational field strength equal 1 and assuming the PoolBall is always either moving or about to move
+        /// implies that friction = coefficientOfFriction (acting in the opposite direction to motion) for an arbitrary coefficientOfFriction.
+        /// </remarks>                                                 
         public void ChangePosition()
         {
-            if (velocity.Length() > 0)
+            if (velocity.Length() > 0) // to prevent division by 0 when normalising (since normalising divides by the vector's magnitude)
             {
-                decelerationDueToRollingResistance = Vector2.Normalize(velocity) * coefficientOfRollingResistance; // friction = coefficientOfFriction * reaction force
-                                                                                                                   // letting mass and gravitational field strength equal 1, friction = coefficientOfFriction (acting in the opposite direction to motion)
-            }                                                                                                      // (normalising velocity allows only its direction to be used, with coefficientOfFriction as the magnitude)
+                decelerationDueToRollingResistance = Vector2.Normalize(velocity) * coefficientOfRollingResistance; // normalising velocity allows only its direction to be used, with coefficientOfFriction as the magnitude
+            }
 
             position += velocity;
         }
 
-        public void DoBoundsCollision() // [remove, soon to be obsolete due to Cushions.cs]
+        /// <summary>
+        /// Keeps the PoolBall within the bounds of the screen, teleporting it back in if necessary.
+        /// </summary>
+        /// <remarks>Although cushion and pocket collisions should prevent PoolBalls from escaping, this method makes sure of that.</remarks>
+        public void DoBoundsCollision()
         {
             // with top:
             // -------------
@@ -163,15 +179,16 @@ namespace PoolGame.Classes
         {
             base.Update(gameTime);
 
-            StopWhenSlow();
-
             DoBoundsCollision();
 
-            ApplyRollingResistance();
+            if (velocity.Length() > 0) // these methods don't do anything if the PoolBall is stationary
+            {
+                StopWhenSlow();
+
+                ApplyRollingResistance();
+            }
 
             ChangePosition();
-
-            
         }
     }
 }

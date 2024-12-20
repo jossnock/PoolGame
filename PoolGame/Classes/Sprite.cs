@@ -10,12 +10,14 @@ using Microsoft.Xna.Framework.Input;
 
 namespace PoolGame.Classes
 {
-    public class Sprite // internal (can't directly create a Sprite object)
+    /// <summary>
+    /// An object that displays a texture in a position.
+    /// </summary>
+    public class Sprite
     {
         public Texture2D texture {  get; set; }
         public Vector2 position { get; set; } // a sprite's position is at its centre unless otherwise specified
 
-        // constructor for rectangles:
         public Sprite(Texture2D _texture, Vector2 _initialPosition)
         {
             texture = _texture;
