@@ -8,18 +8,23 @@ using System.Threading.Tasks;
 
 namespace PoolGame.Classes
 {
+    /// <summary>
+    /// A subclass of <see cref="Sprite"></see> for cushions.
+    /// Cushions have the shape of trapeziums with only horizontal, vertical, and diagonal edges and one line of symmetry
+    /// <para>if orientation == 1, it will look like: ◢■◣</para>
+    /// <para>if orientation == 2, it will look like: ◢■◣ rotated 90 degrees anticlockwise</para>
+    /// <para>if orientation == 3, it will look like: ◥■◤</para>
+    /// <para>if orientation == 4, it will look like: ◥■◤ rotated 90 degrees anticlockwise</para>
+    /// </summary>
+    /// <remarks>The long side of the trapezium doesn't have collisions because PoolBalls shouldn't be able to reach there.</remarks>
+
     public class Cushion : Sprite
     {
-        // for cushions in the shape of trapeziums with only horizontal, vertical, and diagonal edges and one line of symmetry
-        // (technically the long side of the trapezium doesn't have collisions because it doesn't need them
+        // for cushions in 
 
         public int length;
         public int width;
-        public int orientation; // int between 1 and 4
-        // if orientation == 1, it will have the shape: /___\
-        // if orientation == 2, it will have the shape: /___\ rotated 90 degrees anticlockwise
-        // if orientation == 3, it will have the shape: /___\ rotated 180 degrees
-        // if orientation == 4, it will have the shape: /___\ rotated 90 degrees clockwise
+        public int orientation;
 
         public Cushion(Texture2D _texture, Vector2 _position, int _length, int _width, int _orientation) : base()
         {
@@ -35,6 +40,9 @@ namespace PoolGame.Classes
             orientation = _orientation;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void DoCollisions() // [todo: add repositioning outside of the hitbox after collisions
                                    //        add correct corner collisions]
         {
